@@ -18,7 +18,7 @@ class SanBay (db.Model):
     tensanbay = Column(String(50), nullable=False)
     diadiem = Column(String(50), nullable=False)
     sanbaycatcanh = relationship('TuyenBay', backref="sanbaycatcanh", lazy=True, foreign_keys='TuyenBay.masanbaycatcanh')
-    sanbayhacanh = relationship('TuyenBay', backref="sanbayhacanh", lazy=True, foreign_keys='TuyenBay.masanbaycatcanh')
+    sanbayhacanh = relationship('TuyenBay', backref="sanbayhacanh", lazy=True, foreign_keys='TuyenBay.masanbayhacanh')
     diadiemdi = relationship('LoTrinh', backref="diadiemdi", lazy=True, foreign_keys='LoTrinh.madiadiemdi')
     diadiemden = relationship('LoTrinh', backref="diadiemden", lazy=True, foreign_keys='LoTrinh.madiadiemden')
 
@@ -61,7 +61,7 @@ class TuyenBay (db.Model):
     chuyenbay = relationship('ChuyenBay', backref="tuyenbay", lazy=True)
 
     def __str__(self):
-        return self.matuyenbay
+        return self.sanbaycatcanh.tensanbay + " đến " + self.sanbayhacanh.tensanbay
 
 class LichBay (db.Model):
     mahang = Column(Integer, ForeignKey(Hang.mahang), primary_key=True, nullable=False)
@@ -69,15 +69,11 @@ class LichBay (db.Model):
     ngaycohieuluc = Column(Date, nullable=False)
     ngayhethieuluc = Column(Date, nullable=False)
 
-    def __str__(self):
-        return self.mahang
-
 class MayBay (db.Model):
     mamaybay = Column(Integer, primary_key=True, autoincrement=True)
     tenmaybay = Column(String(20), nullable=False)
     mahang = Column(Integer, ForeignKey(Hang.mahang), nullable=False)
     chuyenbay = relationship('ChuyenBay', backref="maybay", lazy=True)
-    vemaybay = relationship('VeMayBay', backref="maybay", lazy=True)
 
     def __str__(self):
         return self.tenmaybay
@@ -87,10 +83,11 @@ class ChuyenBay (db.Model):
     trangthai = Column(Boolean, default=False)
     mamaybay = Column(Integer, ForeignKey(MayBay.mamaybay), nullable=False)
     matuyen = Column(Integer, ForeignKey(TuyenBay.matuyenbay), nullable=False)
+    vemaybay = relationship('VeMayBay', backref="chuyenbay", lazy=True)
     sochongoi = relationship('SoChoNgoi', backref="chuyenbay", lazy=True)
 
     def __str__(self):
-        return self.machuyenbay
+        return self.tuyenbay.__str__()
 
 class LoaiVe (db.Model):
     maloaive = Column(Integer, primary_key=True, autoincrement=True)
@@ -105,23 +102,17 @@ class VeMayBay (db.Model):
     mave = Column(Integer, primary_key=True, autoincrement=True)
     ngaykhoitao = Column(DateTime, nullable=False)
     maloaive = Column(Integer, ForeignKey(LoaiVe.maloaive), nullable=False)
-    mamaybay = Column(Integer, ForeignKey(MayBay.mamaybay), nullable=False)
+    machuyenbay = Column(Integer, ForeignKey(ChuyenBay.machuyenbay), nullable=False)
     makhachhang = Column(Integer, ForeignKey(KhachHang.makhachhang), nullable=False)
     lydohuy = Column(String(20), nullable=True)
     phihuy = Column(DECIMAL(11, 2), nullable=True)
     giamgia = Column(Float, default=0)
-
-    def __str__(self):
-        return self.mave
 
 class SoChoNgoi (db.Model):
     machuyenbay = Column(Integer, ForeignKey(ChuyenBay.machuyenbay), primary_key=True, nullable=False)
     maloaive = Column(Integer, ForeignKey(LoaiVe.maloaive), primary_key=True, nullable=False)
     soluong = Column(Integer, nullable=False)
     giave = Column(DECIMAL(11, 2), nullable=False)
-
-    def __str__(self):
-        return self.soluong
 
 
 admin.add_view(ModelView(Hang, db.session))
