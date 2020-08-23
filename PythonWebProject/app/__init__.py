@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin
-
+from flask_login import LoginManager
 
 app = Flask(__name__)
 
@@ -13,3 +13,4 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 db = SQLAlchemy(app=app)
 
 admin = Admin(app=app, name="Quan Ly Ve May Bay", template_mode="bootstrap3")
+login = LoginManager(app=app)
