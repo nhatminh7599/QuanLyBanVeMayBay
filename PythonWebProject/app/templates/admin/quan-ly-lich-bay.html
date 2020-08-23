@@ -1,6 +1,134 @@
 {% extends "admin/master.html" %}
 
 {% block body %}
+
+<table class="table table-hover">
+    <tr class="row text-center">
+        <td class="col-md-3">Chuyến bay</td>
+        <td class="col-md-3">Khởi hành</td>
+        <td class="col-md-3">Thời gian bay</td>
+        <td class="col-md-3">Chi tiết</td>
+    </tr>
+    <tr class="row text-center">
+        <td class="col-md-3">{{chuyenbay[0].maybay}}</td>
+        <td class="col-md-3">{{chuyenbay[0].giocatcanh}}</td>
+        <td class="col-md-3">{{chuyenbay[0].tuyenbay.thoigianbay}} Phút</td>
+        <td class="col-md-3">
+            <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
+               aria-controls="collapseExample">
+                +
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="5">
+            <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                    <div class="panel panel-primary" style="margin:20px;">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">LỊCH CHUYẾN BAY</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form>
+                                <div class="col-md-12 col-sm-12">
+                                    <div class="form-group col-md-6 col-sm-6">
+                                        <label>Tên máy bay </label>
+                                        <input type="text" class="form-control" readonly value="{{chuyenbay[0].maybay}}">
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-sm-12">
+                                    <div class="form-group col-md-6 col-sm-6">
+                                        <label>Sân bay đi</label>
+                                        <input type="text" class="form-control" readonly value="{{chuyenbay[0].tuyenbay.sanbaycatcanh}}">
+                                    </div>
+
+                                    <div class="form-group col-md-6 col-sm-6">
+                                        <label>Sân bay đến</label>
+                                        <input type="text" class="form-control" readonly
+                                               value="{{chuyenbay[0].tuyenbay.sanbayhacanh}}">
+                                    </div>
+
+                                    <div class="form-group col-md-6 col-sm-6">
+                                        <label for="city">Ngày - giờ khởi hành</label>
+<!--                                        {% if "{:s}".format("{{chuyenbay[0].giocatcanh}}") > "11:59:59" %}-->
+
+                                            <input type="datetime-local" class="form-control input-sm" id="city">
+<!--                                        {% endif %}-->
+
+                                    </div>
+
+                                    <div class="form-group col-md-6 col-sm-6">
+                                        <label>Thời gian bay</label>
+                                        <input type="number" class="form-control input-sm" placeholder="(phút)">
+                                    </div>
+
+                                    <div class="form-group col-md-6 col-sm-6">
+                                        <label>Số lượng ghế hạng 1</label>
+                                        <input type="number" class="form-control input-sm" placeholder="">
+                                    </div>
+
+                                    <div class="form-group col-md-6 col-sm-6">
+                                        <label>Số lượng ghế hạng 2</label>
+                                        <input type="number" class="form-control input-sm" placeholder="">
+                                    </div>
+
+                                    <div class="form-group col-md-6 col-sm-6">
+                                        <label>Giá ghế hạng 1</label>
+                                        <input type="number" class="form-control input-sm" placeholder="">
+                                    </div>
+
+                                    <div class="form-group col-md-6 col-sm-6">
+                                        <label>Giá ghế hạng 2</label>
+                                        <input type="number" class="form-control input-sm" placeholder="">
+                                    </div>
+                                </div>
+                                <table class="table text-center table-hover">
+                                    <tr class="row">
+                                        <td class="col-md-1">STT</td>
+                                        <td class="col-md-3">Sân bay trung gian</td>
+                                        <td class="col-md-2">Thời gian dừng</td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="col-md-1">1</td>
+                                        <td class="col-md-3">
+                                            <div class="form-group">
+                                                <select class="form-control">
+                                                    <option></option>
+                                                    {% for s in sanbay %}
+                                                    <option>{{s.tensanbay}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td class="col-md-2">
+                                            <input type="number" class="form-control" placeholder="(phút)"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="col-md-1">2</td>
+                                        <td class="col-md-3">
+                                            <div class="form-group">
+                                                <select class="form-control ">
+                                                    <option></option>
+                                                    {% for s in sanbay %}
+                                                    <option>{{s.tensanbay}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td class="col-md-2"><input type="number" class="form-control"
+                                                                    placeholder="(phút)"/></td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
 <div class="panel panel-primary" style="margin:20px;">
     <div class="panel-heading">
         <h3 class="panel-title">LỊCH CHUYẾN BAY</h3>
@@ -111,5 +239,6 @@
         </form>
     </div>
 </div>
+
 
 {% endblock %}

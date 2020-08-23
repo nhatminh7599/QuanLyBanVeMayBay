@@ -24,8 +24,8 @@ DROP TABLE IF EXISTS `san_bay`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `san_bay` (
   `masanbay` int NOT NULL AUTO_INCREMENT,
-  `tensanbay` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `diadiem` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tensanbay` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `diadiem` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`masanbay`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -36,7 +36,7 @@ CREATE TABLE `san_bay` (
 
 LOCK TABLES `san_bay` WRITE;
 /*!40000 ALTER TABLE `san_bay` DISABLE KEYS */;
-INSERT INTO `san_bay` VALUES (1,'Tân sơn nhất','HCM'),(2,'Nội bài','HN'),(3,'Sân bay đà nẵng','DN');
+INSERT INTO `san_bay` VALUES (1,'tsn','hcm'),(2,'nb','hn'),(3,'sbdn','dn');
 /*!40000 ALTER TABLE `san_bay` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -49,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-23 16:24:44
+-- Dump completed on 2020-08-21 21:17:35

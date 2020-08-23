@@ -120,7 +120,8 @@ class ThemLichBay(BaseView):
     def index(self):
         sanbay = dao.san_bay_read_all()
         maybay = dao.may_bay_read_all()
-        return self.render("admin/quan-ly-lich-bay.html", sanbay=sanbay, maybay=maybay)
+        chuyenbay = dao.chuyen_bay_read_all()
+        return self.render("admin/quan-ly-lich-bay.html", sanbay=sanbay, maybay=maybay, chuyenbay=chuyenbay)
 
     def is_accessible(self):
         return current_user.is_authenticated and current_user.maloai == 1

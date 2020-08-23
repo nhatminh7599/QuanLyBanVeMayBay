@@ -16,8 +16,28 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Dumping events for database 'ql_maybay'
+-- Table structure for table `hang`
 --
+
+DROP TABLE IF EXISTS `hang`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `hang` (
+  `mahang` int NOT NULL AUTO_INCREMENT,
+  `tenhang` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`mahang`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `hang`
+--
+
+LOCK TABLES `hang` WRITE;
+/*!40000 ALTER TABLE `hang` DISABLE KEYS */;
+INSERT INTO `hang` VALUES (1,'vietjet'),(2,'bamboo'),(3,'jetstar');
+/*!40000 ALTER TABLE `hang` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -28,4 +48,4 @@
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-21 21:17:36
+-- Dump completed on 2020-08-21 21:17:35

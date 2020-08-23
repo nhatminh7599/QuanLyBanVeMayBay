@@ -24,10 +24,12 @@ DROP TABLE IF EXISTS `may_bay`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `may_bay` (
   `mamaybay` int NOT NULL AUTO_INCREMENT,
-  `tenmaybay` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenhang` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`mamaybay`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `tenmaybay` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mahang` int NOT NULL,
+  PRIMARY KEY (`mamaybay`),
+  KEY `mahang` (`mahang`),
+  CONSTRAINT `may_bay_ibfk_1` FOREIGN KEY (`mahang`) REFERENCES `hang` (`mahang`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -36,7 +38,7 @@ CREATE TABLE `may_bay` (
 
 LOCK TABLES `may_bay` WRITE;
 /*!40000 ALTER TABLE `may_bay` DISABLE KEYS */;
-INSERT INTO `may_bay` VALUES (1,'vietjet1','vietjet'),(2,'vietjet2','vietjet'),(3,'vietjet3','vietjet');
+INSERT INTO `may_bay` VALUES (1,'vietjet1',1),(2,'vietjet2',1),(3,'bamboo1',2),(4,'bamboo2',2),(5,'jetstar1',3),(6,'jetstar2',3);
 /*!40000 ALTER TABLE `may_bay` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -49,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-23 16:24:44
+-- Dump completed on 2020-08-21 21:17:34

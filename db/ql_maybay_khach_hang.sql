@@ -16,37 +16,35 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `tuyen_bay`
+-- Table structure for table `khach_hang`
 --
 
-DROP TABLE IF EXISTS `tuyen_bay`;
+DROP TABLE IF EXISTS `khach_hang`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tuyen_bay` (
-  `matuyenbay` int NOT NULL AUTO_INCREMENT,
-  `malotrinh` int NOT NULL,
-  `giocatcanh` time NOT NULL,
-  `giohacanh` time NOT NULL,
-  `masanbaycatcanh` int NOT NULL,
-  `masanbayhacanh` int NOT NULL,
-  PRIMARY KEY (`matuyenbay`,`malotrinh`),
-  KEY `malotrinh` (`malotrinh`),
-  KEY `masanbaycatcanh` (`masanbaycatcanh`),
-  KEY `masanbayhacanh` (`masanbayhacanh`),
-  CONSTRAINT `tuyen_bay_ibfk_1` FOREIGN KEY (`malotrinh`) REFERENCES `lo_trinh` (`malotrinh`),
-  CONSTRAINT `tuyen_bay_ibfk_2` FOREIGN KEY (`masanbaycatcanh`) REFERENCES `san_bay` (`masanbay`),
-  CONSTRAINT `tuyen_bay_ibfk_3` FOREIGN KEY (`masanbayhacanh`) REFERENCES `san_bay` (`masanbay`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE `khach_hang` (
+  `makhachhang` int NOT NULL AUTO_INCREMENT,
+  `ten` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cmnd` int NOT NULL,
+  `sdt` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `diachi` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `gioitinh` tinyint(1) NOT NULL,
+  `tendangnhap` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `matkhau` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`makhachhang`),
+  CONSTRAINT `khach_hang_chk_1` CHECK ((`gioitinh` in (0,1)))
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tuyen_bay`
+-- Dumping data for table `khach_hang`
 --
 
-LOCK TABLES `tuyen_bay` WRITE;
-/*!40000 ALTER TABLE `tuyen_bay` DISABLE KEYS */;
-INSERT INTO `tuyen_bay` VALUES (1,1,'07:00:00','08:00:00',1,3),(2,1,'08:00:00','09:00:00',3,2),(3,2,'10:00:00','11:00:00',1,3),(4,4,'14:00:00','15:00:00',2,3),(5,4,'15:00:00','16:00:00',3,1),(6,3,'07:00:00','08:00:00',3,1),(7,5,'17:00:00','18:00:00',3,1);
-/*!40000 ALTER TABLE `tuyen_bay` ENABLE KEYS */;
+LOCK TABLES `khach_hang` WRITE;
+/*!40000 ALTER TABLE `khach_hang` DISABLE KEYS */;
+INSERT INTO `khach_hang` VALUES (1,'dong',123,'1231231231','ạdjạdk','jkábdk',0,NULL,NULL),(2,'minh',123,'1231232131','ádho','qưoeho',0,NULL,NULL);
+/*!40000 ALTER TABLE `khach_hang` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

@@ -24,17 +24,16 @@ DROP TABLE IF EXISTS `chuyen_bay`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `chuyen_bay` (
   `machuyenbay` int NOT NULL AUTO_INCREMENT,
-  `ngaykhoihanh` date NOT NULL,
-  `giocatcanh` time NOT NULL,
+  `trangthai` tinyint(1) DEFAULT '0',
   `mamaybay` int NOT NULL,
-  `matuyenbay` int NOT NULL,
-  `ghichu` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `matuyen` int NOT NULL,
   PRIMARY KEY (`machuyenbay`),
   KEY `mamaybay` (`mamaybay`),
-  KEY `matuyenbay` (`matuyenbay`),
+  KEY `matuyen` (`matuyen`),
   CONSTRAINT `chuyen_bay_ibfk_1` FOREIGN KEY (`mamaybay`) REFERENCES `may_bay` (`mamaybay`),
-  CONSTRAINT `chuyen_bay_ibfk_2` FOREIGN KEY (`matuyenbay`) REFERENCES `tuyen_bay` (`matuyenbay`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  CONSTRAINT `chuyen_bay_ibfk_2` FOREIGN KEY (`matuyen`) REFERENCES `tuyen_bay` (`matuyenbay`),
+  CONSTRAINT `chuyen_bay_chk_1` CHECK ((`trangthai` in (0,1)))
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +42,7 @@ CREATE TABLE `chuyen_bay` (
 
 LOCK TABLES `chuyen_bay` WRITE;
 /*!40000 ALTER TABLE `chuyen_bay` DISABLE KEYS */;
-INSERT INTO `chuyen_bay` VALUES (1,'2017-06-15','12:00:00',1,1,'asadasd');
+INSERT INTO `chuyen_bay` VALUES (1,0,1,2),(2,0,1,3),(3,0,1,6),(4,0,1,1),(5,0,2,1),(6,0,2,3),(7,0,2,4),(8,0,2,5),(9,0,2,6),(10,0,2,7),(11,0,3,1),(12,0,3,5),(13,0,3,7);
 /*!40000 ALTER TABLE `chuyen_bay` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -56,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-23 16:24:44
+-- Dump completed on 2020-08-21 21:17:35

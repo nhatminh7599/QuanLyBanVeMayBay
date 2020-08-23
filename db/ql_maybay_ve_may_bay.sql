@@ -27,17 +27,17 @@ CREATE TABLE `ve_may_bay` (
   `ngaykhoitao` datetime NOT NULL,
   `maloaive` int NOT NULL,
   `machuyenbay` int NOT NULL,
-  `manguoidung` int NOT NULL,
-  `lydohuy` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `makhachhang` int NOT NULL,
+  `lydohuy` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `phihuy` decimal(11,2) DEFAULT NULL,
   `giamgia` float DEFAULT NULL,
   PRIMARY KEY (`mave`),
   KEY `maloaive` (`maloaive`),
-  KEY `machuyenbay` (`machuyenbay`),
-  KEY `manguoidung` (`manguoidung`),
+  KEY `makhachhang` (`makhachhang`),
+  KEY `ve_may_bay_ibfk_2_idx` (`machuyenbay`),
   CONSTRAINT `ve_may_bay_ibfk_1` FOREIGN KEY (`maloaive`) REFERENCES `loai_ve` (`maloaive`),
   CONSTRAINT `ve_may_bay_ibfk_2` FOREIGN KEY (`machuyenbay`) REFERENCES `chuyen_bay` (`machuyenbay`),
-  CONSTRAINT `ve_may_bay_ibfk_3` FOREIGN KEY (`manguoidung`) REFERENCES `nguoi_dung` (`manguoidung`)
+  CONSTRAINT `ve_may_bay_ibfk_3` FOREIGN KEY (`makhachhang`) REFERENCES `khach_hang` (`makhachhang`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -59,4 +59,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-23 16:24:44
+-- Dump completed on 2020-08-21 21:17:35
