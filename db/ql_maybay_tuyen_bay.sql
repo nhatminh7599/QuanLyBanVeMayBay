@@ -24,19 +24,15 @@ DROP TABLE IF EXISTS `tuyen_bay`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tuyen_bay` (
   `matuyenbay` int NOT NULL AUTO_INCREMENT,
-  `malotrinh` int NOT NULL,
-  `giocatcanh` time NOT NULL,
-  `giohacanh` time NOT NULL,
+  `thoigianbay` int NOT NULL,
   `masanbaycatcanh` int NOT NULL,
   `masanbayhacanh` int NOT NULL,
-  PRIMARY KEY (`matuyenbay`,`malotrinh`),
-  KEY `malotrinh` (`malotrinh`),
+  PRIMARY KEY (`matuyenbay`),
   KEY `masanbaycatcanh` (`masanbaycatcanh`),
   KEY `masanbayhacanh` (`masanbayhacanh`),
-  CONSTRAINT `tuyen_bay_ibfk_1` FOREIGN KEY (`malotrinh`) REFERENCES `lo_trinh` (`malotrinh`),
-  CONSTRAINT `tuyen_bay_ibfk_2` FOREIGN KEY (`masanbaycatcanh`) REFERENCES `san_bay` (`masanbay`),
-  CONSTRAINT `tuyen_bay_ibfk_3` FOREIGN KEY (`masanbayhacanh`) REFERENCES `san_bay` (`masanbay`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  CONSTRAINT `tuyen_bay_ibfk_1` FOREIGN KEY (`masanbaycatcanh`) REFERENCES `san_bay` (`masanbay`),
+  CONSTRAINT `tuyen_bay_ibfk_2` FOREIGN KEY (`masanbayhacanh`) REFERENCES `san_bay` (`masanbay`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +41,7 @@ CREATE TABLE `tuyen_bay` (
 
 LOCK TABLES `tuyen_bay` WRITE;
 /*!40000 ALTER TABLE `tuyen_bay` DISABLE KEYS */;
-INSERT INTO `tuyen_bay` VALUES (1,1,'07:00:00','08:00:00',1,3),(2,1,'08:00:00','09:00:00',3,2),(3,2,'10:00:00','11:00:00',1,3),(4,4,'14:00:00','15:00:00',2,3),(5,4,'15:00:00','16:00:00',3,1),(6,3,'07:00:00','08:00:00',3,1),(7,5,'17:00:00','18:00:00',3,1);
+INSERT INTO `tuyen_bay` VALUES (1,200,1,3);
 /*!40000 ALTER TABLE `tuyen_bay` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -58,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-21 21:17:35
+-- Dump completed on 2020-08-23 16:24:44

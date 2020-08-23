@@ -24,9 +24,9 @@ DROP TABLE IF EXISTS `loai_ve`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `loai_ve` (
   `maloaive` int NOT NULL AUTO_INCREMENT,
-  `tenloaive` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenloaive` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`maloaive`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -35,7 +35,6 @@ CREATE TABLE `loai_ve` (
 
 LOCK TABLES `loai_ve` WRITE;
 /*!40000 ALTER TABLE `loai_ve` DISABLE KEYS */;
-INSERT INTO `loai_ve` VALUES (1,'hang 1'),(2,'hang 2');
 /*!40000 ALTER TABLE `loai_ve` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -48,4 +47,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-21 21:17:35
+-- Dump completed on 2020-08-23 16:24:44
