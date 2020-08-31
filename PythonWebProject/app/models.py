@@ -1,5 +1,6 @@
+import enum
 from app import db, admin, dao
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean,DateTime, Date, DECIMAL, Time, Text
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean,DateTime, Date, DECIMAL, Time, Text, Enum
 from sqlalchemy.orm import relationship
 from flask_admin.contrib.sqla import ModelView
 from flask_login import UserMixin, current_user, logout_user
@@ -7,33 +8,27 @@ from flask_admin import BaseView, expose
 from flask import redirect
 
 
-class NhanVienView(ModelView):
+class AdminView(ModelView):
     column_display_pk = True
 
     def is_accessible(self):
-        return current_user.is_authenticated and current_user.maloai == 1
+        return current_user.is_authenticated and current_user.loaitaikhoan == LoaiTaiKhoan.ADMIN
 
 
 class SanBay (db.Model):
+    __table_args__ = {'extend_existing': True}
     masanbay = Column(Integer, primary_key=True, autoincrement=True)
     tensanbay = Column(String(50), nullable=False)
     diadiem = Column(String(50), nullable=False)
-    sanbaycatcanh = relationship('TuyenBay', backref="sanbaycatcanh", lazy=True, foreign_keys='TuyenBay.masanbaycatcanh')
-    sanbayhacanh = relationship('TuyenBay', backref="sanbayhacanh", lazy=True, foreign_keys='TuyenBay.masanbayhacanh')
+    sanbaycatcanh = relationship('LichChuyenBay', backref="sanbaycatcanh", lazy=True, foreign_keys='LichChuyenBay.masanbaycatcanh')
+    sanbayhacanh = relationship('LichChuyenBay', backref="sanbayhacanh", lazy=True, foreign_keys='LichChuyenBay.masanbayhacanh')
+    sanbaytrunggian = relationship('SanBayTrungGian', backref='sanbay', lazy=True)
 
     def __str__(self):
         return self.tensanbay
 
-class MayBay (db.Model):
-    mamaybay = Column(Integer, primary_key=True, autoincrement=True)
-    tenmaybay = Column(String(20), nullable=False)
-    tenhang = Column(String(50), nullable=False)
-    chuyenbay = relationship('ChuyenBay', backref="maybay", lazy=True)
-
-    def __str__(self):
-        return self.tenmaybay
-
 class NguoiDung (db.Model):
+    __table_args__ = {'extend_existing': True}
     manguoidung = Column(Integer, primary_key=True, autoincrement=True)
     ten = Column(String(50), nullable=False)
     cmnd = Column(Integer, nullable=False)
@@ -47,84 +42,87 @@ class NguoiDung (db.Model):
     def __str__(self):
         return self.ten
 
-class TuyenBay (db.Model):
-    matuyenbay = Column(Integer, primary_key=True, autoincrement=True)
-    thoigianbay = Column(Integer, nullable=False)
+class LichChuyenBay(db.Model):
+    __table_args__ = {'extend_existing': True}
+    machuyenbay = Column(Integer, primary_key=True, autoincrement=True)
     masanbaycatcanh = Column(Integer, ForeignKey(SanBay.masanbay), nullable=False)
     masanbayhacanh = Column(Integer, ForeignKey(SanBay.masanbay), nullable=False)
-    chuyenbay = relationship('ChuyenBay', backref="tuyenbay", lazy=True)
+    ngaykhoihanh = Column(DateTime, nullable=False)
+    thoigianbay = Column(Integer, nullable=False)
+    soluongghehang1 = Column(Integer, nullable=False)
+    soluongghehang2 = Column(Integer, nullable=False)
+    sanbaytrunggian = relationship('SanBayTrungGian', backref='lichchuyenbay', lazy=True)
+    giave = relationship('GiaVe', backref='lichchuyenbay', lazy=True)
 
-    def __str__(self):
-        return self.sanbaycatcanh.tensanbay + " đến " + self.sanbayhacanh.tensanbay
+    # def __str__(self):
+    #     return self.sanbaycatcanh.tensanbay + " đến " + self.sanbayhacanh.tensanbay
 
 
-class ChuyenBay (db.Model):
-    machuyenbay = Column(Integer, primary_key=True, autoincrement=True)
-    ngaykhoihanh = Column(Date, nullable=False)
-    giocatcanh = Column(Time, nullable=False)
-    mamaybay = Column(Integer, ForeignKey(MayBay.mamaybay), nullable=False)
-    matuyenbay = Column(Integer, ForeignKey(TuyenBay.matuyenbay), nullable=False)
-    ghichu = Column(Text, nullable=False)
-    vemaybay = relationship('VeMayBay', backref="chuyenbay", lazy=True)
-    sochongoi = relationship('SoChoNgoi', backref="chuyenbay", lazy=True)
-
-    def __str__(self):
-        return self.tuyenbay.__str__()
+class SanBayTrungGian (db.Model):
+    __table_args__ = {'extend_existing': True}
+    masanbay = Column(Integer, ForeignKey(SanBay.masanbay), primary_key=True)
+    machuyenbay = Column(Integer, ForeignKey(LichChuyenBay.machuyenbay), primary_key=True)
+    thoigiandung = Column(DateTime, nullable=False)
 
 class LoaiVe (db.Model):
+    __table_args__ = {'extend_existing': True}
     maloaive = Column(Integer, primary_key=True, autoincrement=True)
     tenloaive = Column(String(20), nullable=False)
-    vemaybay = relationship('VeMayBay', backref="loaive", lazy=True)
-    sochongoi = relationship('SoChoNgoi', backref="loaive", lazy=True)
+    giave = relationship('GiaVe', backref='loaive', lazy=True)
 
     def __str__(self):
         return self.tenloaive
 
-class VeMayBay (db.Model):
-    mave = Column(Integer, primary_key=True, autoincrement=True)
-    ngaykhoitao = Column(DateTime, nullable=False)
-    maloaive = Column(Integer, ForeignKey(LoaiVe.maloaive), nullable=False)
-    machuyenbay = Column(Integer, ForeignKey(ChuyenBay.machuyenbay), nullable=False)
-    manguoidung = Column(Integer, ForeignKey(NguoiDung.manguoidung), nullable=False)
-    lydohuy = Column(String(20), nullable=True)
-    phihuy = Column(DECIMAL(11, 2), nullable=True)
-    giamgia = Column(Float, default=0)
-
-class SoChoNgoi (db.Model):
-    machuyenbay = Column(Integer, ForeignKey(ChuyenBay.machuyenbay), primary_key=True, nullable=False)
-    maloaive = Column(Integer, ForeignKey(LoaiVe.maloaive), primary_key=True, nullable=False)
-    soluong = Column(Integer, nullable=False)
+class GiaVe (db.Model):
+    __table_args__ = {'extend_existing': True}
+    machuyenbay = Column(Integer, ForeignKey(LichChuyenBay.machuyenbay), primary_key=True)
+    maloaive = Column(Integer, ForeignKey(LoaiVe.maloaive), primary_key=True)
     giave = Column(DECIMAL(11, 2), nullable=False)
 
-class LoaiTaiKhoan (db.Model):
-    maloai = Column(Integer, primary_key=True, autoincrement=True)
-    tenloai = Column(String(50), nullable=False)
-    taikhoan = relationship('TaiKhoan', backref='loaitaikhoan', lazy=True)
+class TrangThaiVe(enum.Enum):
+    DATHANHTOAN = 1
+    DADAT = 2
 
-    def __str__(self):
-        return self.tenloai
+
+class VeMayBay (db.Model):
+    __table_args__ = {'extend_existing': True}
+    mave = Column(Integer, primary_key=True, autoincrement=True)
+    ngaykhoitao = Column(DateTime, nullable=False)
+    trangthai = Column(Enum(TrangThaiVe), nullable=False)
+    gia = Column(DECIMAL(11, 2), nullable=False)
+    giamgia = Column(Float, default=0)
+    maloaive = Column(Integer, ForeignKey(LoaiVe.maloaive), nullable=False)
+    machuyenbay = Column(Integer, ForeignKey(LichChuyenBay.machuyenbay), nullable=False)
+    manguoidung = Column(Integer, ForeignKey(NguoiDung.manguoidung), nullable=False)
+
+
+class LoaiTaiKhoan(enum.Enum):
+    ADMIN = 1
+    NHANVIEN = 2
+
 
 class TaiKhoan (db.Model, UserMixin):
+    __table_args__ = {'extend_existing': True}
     id = Column(Integer, primary_key=True, autoincrement=True)
     tentaikhoan = Column(String(20), nullable=False)
     matkhau = Column(String(100), nullable=False)
     active = Column(Boolean, default=True)
+    loaitaikhoan = Column(Enum(LoaiTaiKhoan), default=LoaiTaiKhoan.NHANVIEN)
     manguoidung = Column(Integer, ForeignKey(NguoiDung.manguoidung), nullable=False)
-    maloai = Column(Integer, ForeignKey(LoaiTaiKhoan.maloai), nullable=False)
 
     def __str__(self):
         return self.tentaikhoan
 
-class ThemLichBay(BaseView):
-    @expose("/")
-    def index(self):
-        sanbay = dao.san_bay_read_all()
-        maybay = dao.may_bay_read_all()
-        chuyenbay = dao.chuyen_bay_read_all()
-        return self.render("admin/quan-ly-lich-bay.html", sanbay=sanbay, maybay=maybay, chuyenbay=chuyenbay)
-
-    def is_accessible(self):
-        return current_user.is_authenticated and current_user.maloai == 1
+# class ThemLichBay(BaseView):
+#     @expose("/")
+#     def index(self):
+#         sanbay = dao.san_bay_read_all()
+#         maybay = dao.may_bay_read_all()
+#         chuyenbay = dao.chuyen_bay_read_all()
+#         return self.render("admin/quan-ly-lich-bay.html", sanbay=sanbay, maybay=maybay, chuyenbay=chuyenbay)
+#
+#     def is_accessible(self):
+#         return current_user.is_authenticated and current_user.loaitaikhoan == LoaiTaiKhoan.ADMIN
 
 class LogoutView(BaseView):
     @expose("/")
@@ -133,21 +131,6 @@ class LogoutView(BaseView):
         return redirect("/admin")
     def is_accessible(self):
         return current_user.is_authenticated
-
-
-admin.add_view(NhanVienView(SanBay, db.session))
-admin.add_view(NhanVienView(MayBay, db.session))
-admin.add_view(NhanVienView(NguoiDung, db.session))
-admin.add_view(NhanVienView(TuyenBay, db.session))
-admin.add_view(NhanVienView(ChuyenBay, db.session))
-admin.add_view(NhanVienView(LoaiVe, db.session))
-admin.add_view(NhanVienView(VeMayBay, db.session))
-admin.add_view(NhanVienView(SoChoNgoi, db.session))
-admin.add_view(NhanVienView(TaiKhoan, db.session))
-admin.add_view(NhanVienView(LoaiTaiKhoan, db.session))
-admin.add_view(ThemLichBay(name="Quản lý lịch bay"))
-admin.add_view(LogoutView(name="Log out"))
-
 
 if __name__ == "__main__":
     db.create_all()

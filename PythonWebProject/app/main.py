@@ -1,6 +1,6 @@
 from app import app, login, dao
-from flask import render_template, redirect, request
-from app.models import *
+from app.admin import *
+from flask import render_template, redirect, request, url_for, session
 from flask_login import login_user
 import hashlib
 
@@ -18,15 +18,13 @@ def login_admin():
         tentaikhoan = request.form.get("tentaikhoan")
         matkhau = request.form.get("matkhau")
         matkhau = str(hashlib.md5(matkhau.strip().encode("utf-8")).hexdigest())
-        taikhoan = TaiKhoan.query.filter(TaiKhoan.tentaikhoan == tentaikhoan.strip(), TaiKhoan.matkhau == matkhau).first()
+        taikhoan = TaiKhoan.query.filter(TaiKhoan.tentaikhoan == tentaikhoan.strip(), TaiKhoan.matkhau == matkhau, TaiKhoan.loaitaikhoan == LoaiTaiKhoan.ADMIN).first()
         if taikhoan:
             login_user(user=taikhoan)
-    return redirect('/admin')
-
-@app.route("/api/lichbay", methods=["GET"])
-def get_lich_bay():
-    if request.methods == 'GET':
-        return dao.san_bay_read_all()
+        else:
+            err = "Truy cập thất bại"
+            session['err-login'] = err
+        return redirect('/admin')
 
 
 if __name__ == "__main__":

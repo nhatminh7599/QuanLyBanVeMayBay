@@ -5,6 +5,12 @@
     <h1>WELCOME TO MY WEBSITE!!!</h1>
     <h1>{{ current_user }}</h1>
     {% else %}
-        {% include "admin/login.html" %}
+        {% if session['err-login'] %}
+            <div class="alert alert-danger">
+            {{ session['err-login'] }}
+            </div>
+        {% endif %}
+
+        {% include 'admin/login.html' %}
     {% endif %}
 {% endblock %}
