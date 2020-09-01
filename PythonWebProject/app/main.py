@@ -1,12 +1,15 @@
-from app import app, login, dao
+import json
+
+from app import app, login, dao, restapi
 from app.admin import *
-from flask import render_template, redirect, request, url_for, session
+from flask import render_template, redirect, request, url_for, session, jsonify
 from flask_login import login_user
 import hashlib
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    lich = dao.read_lich_chuyen_bay()
+    return render_template("index.html", lich=lich)
 
 @login.user_loader
 def user_loader(user_id):
@@ -25,6 +28,8 @@ def login_admin():
             err = "Truy cập thất bại"
             session['err-login'] = err
         return redirect('/admin')
+
+
 
 
 if __name__ == "__main__":

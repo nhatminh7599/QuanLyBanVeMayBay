@@ -54,8 +54,8 @@ class LichChuyenBay(db.Model):
     sanbaytrunggian = relationship('SanBayTrungGian', backref='lichchuyenbay', lazy=True)
     giave = relationship('GiaVe', backref='lichchuyenbay', lazy=True)
 
-    # def __str__(self):
-    #     return self.sanbaycatcanh.tensanbay + " đến " + self.sanbayhacanh.tensanbay
+    def __str__(self):
+        return self.sanbaycatcanh.tensanbay + " đến " + self.sanbayhacanh.tensanbay
 
 
 class SanBayTrungGian (db.Model):
