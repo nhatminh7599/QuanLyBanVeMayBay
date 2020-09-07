@@ -8,8 +8,9 @@ import hashlib
 
 @app.route("/")
 def index():
-    lich = dao.read_lich_chuyen_bay()
-    return render_template("index.html", lich=lich)
+    sanbay = dao.read_san_bay()
+    loaive = dao.read_loai_ve()
+    return render_template("nhanvien/index.html", sanbay=sanbay, loaive=loaive)
 
 
 @login.user_loader
@@ -30,6 +31,34 @@ def login_admin():
             err = "Truy cập thất bại"
             session['err-login'] = err
         return redirect('/admin')
+
+@app.route("/ticket-detail", methods=['get', 'post'] )
+def ticket_detail():
+    return render_template("ticket-detail.html")
+
+@app.route("/ticket-list", methods=['get', 'post'] )
+def ticket_list():
+    return render_template("nhanvien/ticket-list.html")
+
+@app.route("/ticket-fill-form", methods=['get', 'post'] )
+def ticket_fill_form():
+    return render_template("ticket-fill-form.html")
+
+@app.route("/ticket-info", methods=['get', 'post'] )
+def ticket_info():
+    return render_template("ticket-info.html")
+
+@app.route("/ticket-manager", methods=['get', 'post'] )
+def ticket_manager():
+    return render_template("ticket-manager.html")
+
+@app.route("/nhanvien/flight-manager", methods=['get', 'post'] )
+def flight_manager():
+    return render_template("nhanvien/flight-manager.html")
+
+@app.route("/login", methods=['get', 'post'] )
+def login():
+    return render_template("login.html")
 
 
 if __name__ == "__main__":

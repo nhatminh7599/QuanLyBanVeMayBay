@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block body %}
+
+    <section class="search_your_country">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-lg-12">
+                <div class="search_form form-style">
+                    <h1 style="text-align: center; color: #fff">Tra cứu chuyến bay</h1>
+                    <div id="form">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label class="font-weight-bold">Điểm khởi hành</label>
+                                <select id="diemDiId" class="form-control">
+                                    {% for sb in sanbay %}
+                                            <option>{{sb.diadiem}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="font-weight-bold">Điểm đến</label>
+                                <select id="diemDenId" class="form-control">
+                                    {% for sb in sanbay %}
+                                            <option>{{sb.diadiem}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label class="font-weight-bold">Ngày đi</label>
+                                <input type="date" class="form-control" id="inputAddress1"
+                                       placeholder="1234 Main St">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="font-weight-bold">Hạng ghế</label>
+                                <select id="inputState4" class="form-control">
+                                    {% for lv in loaive %}
+                                            <option>{{ lv.loaive }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <button  class="btn btn-primary btn-style" onclick="submit()"><i
+                                class="fa fa-search"></i> Tìm chuyến bay
+                        </button>
+
+                        <div id="err_msg">ss</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+{% block scripts %}
+
+    <script>
+<!--        fetch('http://127.0.0.1:5000/api/san-bay').then(res => res.json()).then(data => {-->
+<!--            var diemdi = document.getElementById('diemDiId')-->
+<!--            var diemden = document.getElementById('diemDenId')-->
+<!--            data.forEach(e => {-->
+<!--                diemdi.innerHtml += `<option>${e.diadiem}</option>`-->
+<!--                diemden.innerHtml += `<option>${e.diadiem}</option>`-->
+<!--            })-->
+<!--        })-->
+        function submit() {
+            var diemdi = document.getElementById('diemDiId')
+            diemdi= diemdi.options[diemdi.selectedIndex].value
+
+            var diemden = document.getElementById('diemDenId')
+            diemden= diemden.options[diemden.selectedIndex].value
+
+            var msg = document.getElementById('err_msg')
+
+            if (diemdi == diemden)
+                msg.innerText = 'ahskasx';
+            else
+                window.location.href = "http://127.0.0.1:5000//ticket-list";
+
+
+
+
+        }
+
+    </script>
+
+{% endblock %}

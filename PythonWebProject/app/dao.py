@@ -1,6 +1,17 @@
 from app.models import *
 import datetime
 
+def read_san_bay():
+    data = []
+    sanbay = SanBay.query.all()
+    for san in sanbay:
+        data.append({
+            'masanbay': san.masanbay,
+            'tensanbay': san.tensanbay,
+            'diadiem': san.diadiem
+        })
+    return data
+
 
 def read_lich_chuyen_bay():
     data = []
@@ -150,12 +161,11 @@ def read_lich_chuyen_bay_form(diemdi, diemden, ngaykhoihanh):
 
 def read_loai_ve():
     data = []
-    ve = GiaVe.query.all()
-    for v in ve:
+    loaive = LoaiVe.query.all()
+    for loai in loaive:
         data.append({
-            'tenchuyenbay': v.lichchuyenbay.__str__(),
-            'loaive': v.loaive.__str__(),
-            'giave': str(v.giave)
+            'maloai': loai.maloaive,
+            'loaive': loai.tenloaive
         })
     return data
 

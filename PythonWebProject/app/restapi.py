@@ -2,6 +2,16 @@ from app import app, dao
 from flask import jsonify, request
 
 
+@app.route("/api/san-bay", methods=['get'])
+def san_bay():
+    data = dao.read_san_bay()
+    return jsonify(
+        message="success",
+        data=data,
+        status=200
+    )
+
+
 @app.route("/api/lich-chuyen-bay", methods=['get', 'post'])
 def lich_chuyen_bay():
     if request.args.get("diemdi") and request.args.get("diemden") and request.args.get("ngaykhoihanh"):
