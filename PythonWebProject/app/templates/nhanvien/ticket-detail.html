@@ -1,17 +1,17 @@
-{% extends 'index.html' %}
+{% extends 'base.html' %}
 
 {% block body %}
-
+<body>
 <section class="search_your_country">
+
     <div class="container-fluid">
         <div class="row align-items-center">
             <div class="col-lg-12">
                 <div class="ticket-form-detail-1 search_form">
                     <div>
-                        <h3>Flight from Hà Nội to TP
-                            HCM</h3>
-                        <a class="txt-color"><i class="fa fa-plane"></i> Hà Nội -> TP HCM &nbsp;&nbsp; | &nbsp;&nbsp;
-                            20/9/2020</a>
+                        <h3>Flight from {{data.diadiemdi}} to {{data.diadiemden}}</h3>
+                        <a class="txt-color"><i class="fa fa-plane"></i> {{data.sanbaycatcanh}} -> {{data.sanbayhacanh}} &nbsp;&nbsp; | &nbsp;&nbsp;
+                            {{data.ngaykhoihanh}}</a>
                     </div>
                 </div>
             </div>
@@ -27,27 +27,27 @@
                         <div class="content-1 txt-style-2 tooltip-test" title="Chi tiết chuyến bay"
                              data-toggle="modal" data-target="#exampleModalCenter">
 
-                            <h4 class=""><i class="fa fa-plane"></i>&nbsp; Hà Nội -> TP HCM</h4>
+                            <h4 class=""><i class="fa fa-plane"></i>&nbsp; {{data.diadiemdi}} -> {{data.diadiemden}}</h4>
                             <a class="txt-color-1">
                                 <i class="fa fa-info-circle fa-lg"></i>
                             </a>
                         </div>
 
                         <div>
-                            <h5><i class="fa fa-calendar"></i>&nbsp; T4, 2 Th09 2020</h5>
+                            <h5><i class="fa fa-calendar"></i>&nbsp; {{data.ngaykhoihanh}} </h5>
 
-                            <div class="content-2">Tên chuyến bay</div>
+                            <div class="content-2">{{data.diadiemdi}} - {{data.diadiemden}}</div>
                             <div class="content-3">
                                 <div class="content-3-1">Thời gian khởi hành</div>
                                 <div class="content-3-1">Thời gian bay</div>
                                 <div class="content-3-1">Điểm dừng</div>
                             </div>
                             <div class="content-4">
-                                <div class="content-4-1">00:00</div>
-                                <div class="content-4-1">120p</div>
+                                <div class="content-4-1">{{data.giokhoihanh}}</div>
+                                <div class="content-4-1">{{data.thoigianbay}} phút</div>
                                 <div class="content-4-1">
                                     <i class="fa fa-circle fa-xs" style="color: #ffc412"></i>
-                                    2 điểm dừng
+                                    {{data.sodiemdung}} điểm dừng
                                 </div>
                             </div>
                         </div>
@@ -60,14 +60,15 @@
                         </div>
                         <div class="content-4">
                             <div class="content-4-1">Hạng vé</div>
-                            <div class="content-4-1 txt-style">1</div>
+                            <div class="content-4-1 txt-style">{{data.loaive}}</div>
                         </div>
                         <div class="content-4">
                             <div class="content-4-1">Giá vé</div>
-                            <div class="content-4-1 txt-style">1231234 VND</div>
+                            <div class="content-4-1 txt-style">{{giave}} VND</div>
                         </div>
                         <br>
-                        <a href="{{ url_for('ticket_fill_form') }}" class="btn btn-primary txt-color-2">Tiếp Tục</a>
+                        <a href="{{ url_for('ticket_fill_form', machuyenbay=data.machuyenbay, maloaive=data.maloaive, giave=giave) }}"
+                           class="btn btn-primary txt-color-2">Tiếp Tục</a>
                     </div>
 
                 </div>
@@ -75,7 +76,9 @@
         </div>
     </div>
 </div>
-
+<div>
+        {{data}}
+    </div>
 <!-- Modal chi tiết tuyến bay -->
 <div class="modal fade modal-style" id="exampleModalCenter" tabindex="-1" role="dialog"
      aria-labelledby="exampleModalCenterTitle"
@@ -91,12 +94,12 @@
             </div>
             <div class="modal-body">
                 <div>
-                    <h5><i class="fa fa-calendar"></i>&nbsp; T4, 2 Th09 2020</h5>
+                    <h5><i class="fa fa-calendar"></i>&nbsp; {{data.ngaykhoihanh}}</h5>
 
                     <div class="content-5">
-                        <div class="content-3-1 align-self-center">Tên chuyến bay</div>
+                        <div class="content-3-1 align-self-center">{{data.diadiemdi}} - {{data.diadiemden}}</div>
                         <div class="content-3-2">
-                            <div class="content-5-1">Địa điểm đi</div>
+                            <div class="content-5-1">{{data.sanbaycatcanh}}</div>
                             <div class="content-5-1">
                                 <svg fill="#1BA0E2" class="_1bAqu" height="24" stroke="currentColor"
                                      stroke-linecap="round"
@@ -148,40 +151,31 @@
                                      19.209139,13 17,13 C14.790861,13 13,14.790861 13,17 C13,19.209139
                                      14.790861,21 17,21 Z"></path>
                                 </svg>
-                                120p
+                                {{data.thoigianbay}} phút
                             </div>
-                            <div class="content-5-1">Địa điểm đến</div>
+                            <div class="content-5-1">{{data.sanbayhacanh}}</div>
                         </div>
                     </div>
                     <div>
-                        <h4 class="txt-style-1">Điểm dừng thứ 1</h4>
+                        {% if data.sodiemdung > 0 %}
+                        {% for diemdung in data.sanbaytrunggian %}
+                        <h4 class="txt-style-1">Điểm dừng thứ {{diemdung.thutu}}</h4>
                         <div class="content-6">
                             <div class="content-4-1">Địa điểm dừng</div>
                             <div class="content-4-1">Thời gian dừng</div>
                         </div>
                         <div class="content-6">
-                            <div class="content-4-1">Hà nội</div>
-                            <div class="content-4-1">120p</div>
+                            <div class="content-4-1">{{diemdung.diadiemdung}}</div>
+                            <div class="content-4-1">{{diemdung.thoigiandung}} phút</div>
                         </div>
-                    </div>
-                    <div>
-                        <h4 class="txt-style-1">Điểm dừng thứ 2</h4>
-                        <div class="content-6">
-                            <div class="content-4-1">Địa điểm dừng</div>
-                            <div class="content-4-1">Thời gian dừng</div>
-                        </div>
-                        <div class="content-6">
-                            <div class="content-4-1">Lào Cai</div>
-                            <div class="content-4-1">180p</div>
-                        </div>
+                        {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
             </div>
-            <!--            <div class="modal-footer">-->
-            <!--                <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>-->
-            <!--            </div>-->
         </div>
     </div>
 </div>
+</body>
 
 {% endblock %}

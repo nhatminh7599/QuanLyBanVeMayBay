@@ -14,18 +14,29 @@ def san_bay():
 
 @app.route("/api/lich-chuyen-bay", methods=['get', 'post'])
 def lich_chuyen_bay():
-    if request.args.get("diemdi") and request.args.get("diemden") and request.args.get("ngaykhoihanh"):
-        diemdi = request.form.get("diemdi")
-        diemden = request.form.get("diemden")
-        ngaykhoihanh = request.args.get("ngaykhoihanh")
-        data = dao.read_lich_chuyen_bay_form(diemdi, diemden, ngaykhoihanh)
-    else:
-        if request.args.get("diemdi") and request.args.get("diemden"):
-            diemdi = request.form.get("diemdi")
-            diemden = request.form.get("diemden")
-            data = dao.read_lich_chuyen_bay_san_bay(diemdi, diemden)
-        else:
-            data = dao.read_lich_chuyen_bay()
+    try:
+    # if request.json["diemdi"] and request.json["diemden"] \
+    #         and request.json["ngaykhoihanh"] and request.json["loaive"]:
+        diemdi = request.json["diemdi"]
+        diemden = request.json["diemden"]
+        ngaykhoihanh = request.json["ngaykhoihanh"]
+        loaive = request.json["loaive"]
+        data = dao.read_lich_chuyen_bay_form(diemdi, diemden, ngaykhoihanh, loaive)
+    # else:
+    except Exception:
+        data = dao.read_lich_chuyen_bay()
+    return jsonify(
+        message="success",
+        data=data,
+        status=200
+    )
+
+
+@app.route("/api/read-lich-chuyen-bay-theo-ma-chuyen-ma-loai-ve", methods=['get', 'post'])
+def read_lich_chuyen_bay_theo_ma_chuyen_ma_loai_ve():
+    machuyenbay = request.json["machuyenbay"]
+    maloaive = request.json["maloaive"]
+    data = dao.read_lich_chuyen_bay_theo_ma_chuyen_ma_loai_ve(machuyenbay, maloaive)
     return jsonify(
         message="success",
         data=data,
@@ -63,10 +74,10 @@ def gia_ve_theo_chuyen(ma_chuyen):
     )
 
 
-@app.route("/api/khach-hang")
+@app.route("/api/khach-hang", methods=['get', 'post'])
 def khach_hang():
-    keyword = request.args["keyword"] if request.args.get("keyword") else None
-    data = dao.read_khach_hang(keyword=keyword)
+    keyword = request.json["kw"] if request.json["kw"] else None
+    data = dao.tim_khach_hang(keyword=keyword)
     return jsonify(
         message="success",
         data=data,
@@ -76,28 +87,40 @@ def khach_hang():
 
 @app.route("/api/them-ve", methods=['post', 'get'])
 def them_ve():
-    trang_thai = request.args.get('trangthai')
-    ma_ve = request.args.get('mave')
-    gia = request.args.get('gia')
-    giam_gia = request.args.get('giamgia')
-    ma_loai_ve = request.args.get('maloaive')
-    ma_chuyen_bay = request.args.get('machuyenbay')
-    ma_khach_hang = request.args.get('makhachhang')
-    if dao.them_ve(trang_thai, gia, giam_gia, ma_loai_ve, ma_chuyen_bay, ma_khach_hang):
+    try:
+        trang_thai = int(request.json['trang_thai'])
+        gia = int(request.json['gia'])
+        giam_gia = 0
+        ma_loai_ve = int(request.json['ma_loai_ve'])
+        ma_chuyen_bay = int(request.json['ma_chuyen_bay'])
+        ten_khach_hang = request.json['ten_khach_hang']
+        cmnd = int(request.json['cmnd'])
+        sdt = request.json['sdt']
+        email = request.json['email']
+        gioi_tinh = request.json['gioi_tinh']
+
+        ma_khach_hang = dao.them_khach_hang(ten_khach_hang=ten_khach_hang, cmnd=cmnd, sdt=sdt, email=email, gioi_tinh=gioi_tinh)
+        if dao.them_ve(trang_thai=int(trang_thai), gia=gia, giam_gia=0, ma_loai_ve=ma_loai_ve,
+                       ma_chuyen_bay=ma_chuyen_bay, ma_khach_hang=ma_khach_hang):
+            return jsonify(
+                message="success",
+                status=200
+            )
         return jsonify(
-            message="success",
-            status=200
+            message="Them ve that bai",
+            status=400
         )
-    return jsonify(
-        message="fail",
-        status=400
-    )
+    except Exception:
+        return jsonify(
+            message="fail",
+            status=400
+        )
 
 
 @app.route("/api/del-ve", methods=['delete'])
 def xoa_ve():
-    ma_ve = request.form.get("mave")
-    if dao.delete_ve(ma_ve):
+    ma_ve = request.json["mave"]
+    if dao.xoa_ve(ma_ve):
         return jsonify(
             message="success",
             status=200
@@ -108,13 +131,10 @@ def xoa_ve():
     )
 
 
-@app.route("/api/sua-ve", methods=['post', 'get'])
-def sua_ve():
-    ma_ve = request.args.get('mave')
-    gia = request.args.get('gia')
-    giam_gia = request.args.get('giamgia')
-    ma_loai_ve = request.args.get('maloaive')
-    if dao.sua_ve(ma_ve, gia, giam_gia, ma_loai_ve):
+@app.route("/api/sua-trang-thai-ve", methods=['post', 'get'])
+def sua_trang_thai_ve():
+    ma_ve = request.json['mave']
+    if dao.sua_trang_thai_ve(ma_ve):
         return jsonify(
             message="success",
             status=200
@@ -127,15 +147,30 @@ def sua_ve():
 
 @app.route("/api/sua-khach-hang", methods=['post', 'get'])
 def sua_khach_hang():
-    ma_khach_hang = request.args.get('makhachhang')
-    ten_khach_hang = request.args.get('tenkhachhang')
-    cmnd = request.args.get('cmnd')
-    sdt = request.args.get('sdt')
-    email = request.args.get('email')
-    gioi_tinh = request.args.get('gioitinh')
-    if dao.sua_khach_hang(ma_khach_hang, ten_khach_hang, cmnd, sdt, email, gioi_tinh):
+    ma_khach_hang = request.json['makhachhang']
+    ten_khach_hang = request.json['tenkhachhang']
+    cmnd = request.json['cmnd']
+    sdt = request.json['sdt']
+    email = request.json['email']
+    if dao.sua_khach_hang(ma_khach_hang, ten_khach_hang, cmnd, sdt, email):
         return jsonify(
             message="success",
+            status=200
+        )
+    return jsonify(
+        message="fail",
+        status=400
+    )
+
+
+@app.route("/api/chi-tiet-ve", methods=['post', 'get'])
+def chi_tiet_ve():
+    ma_khach_hang = request.json['makhachhang']
+    ma_ve = request.json['mave']
+    if dao.tim_khach_hang_id(ma_khach_hang, ma_ve):
+        return jsonify(
+            message="success",
+            data=dao.tim_khach_hang_id(ma_khach_hang, ma_ve),
             status=200
         )
     return jsonify(

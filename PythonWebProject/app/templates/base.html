@@ -60,13 +60,13 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="" id="navbarDropdown"
                                    role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Welcome <span style="font-weight:600">Account</span>
+                                    Welcome <span style="font-weight:600">{{current_user.tentaikhoan}}</span>
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="blog.html">
                                         <i class="fa fa-user fa-lg"></i>&nbsp;Tùy Chỉnh</a>
                                     <div style="border-bottom: 0.5px solid; color: #fff;"></div>
-                                    <a class="dropdown-item" href="blog.html">
+                                    <a class="dropdown-item" href="{{ url_for('logout') }}">
                                         <i class="fa fa-power-off fa-lg"></i>&nbsp;Đăng xuất</a>
                                 </div>
                             </li>

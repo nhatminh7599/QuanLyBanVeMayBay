@@ -1,4 +1,4 @@
-import enum
+
 from datetime import datetime
 
 from app import db
@@ -40,17 +40,17 @@ class NguoiDung (db.Model):
     diachi = Column(String(50), nullable=False)
     gioitinh = Column(Boolean, default=True)
     taikhoan = relationship('TaiKhoan', backref='nguoidung', lazy=True)
+    quydinh = relationship('QuyDinh', backref='nguoidung', lazy=True)
 
     def __str__(self):
         return self.ten
 
 
-class GioiTinh(enum.Enum):
-    Nam = 1
-    Nữ = 2
-
-    def __str__(self):
-        return self._name_
+class QuyDinh (db.Model):
+    __table_args__ = {'extend_existing': True}
+    maquydinh = Column(Integer, primary_key=True, autoincrement=True)
+    noidung = Column(Text, nullable=False)
+    manguoidung = Column(Integer, ForeignKey(NguoiDung.manguoidung), nullable=False)
 
 
 class KhachHang (db.Model):
@@ -60,7 +60,7 @@ class KhachHang (db.Model):
     cmnd = Column(Integer, nullable=False)
     sdt = Column(String(10), nullable=False)
     email = Column(String(50), nullable=True)
-    gioitinh = Column(Enum(GioiTinh), nullable=False)
+    gioitinh = Column(String(3), nullable=False)
     vemaybay = relationship('VeMayBay', backref="khachhang", lazy=True)
 
     def __str__(self):
@@ -81,7 +81,7 @@ class LichChuyenBay(db.Model):
     vemaybay = relationship('VeMayBay', backref='lichchuyenbay', lazy=True)
 
     def __str__(self):
-        return self.sanbaycatcanh.tensanbay + " đến " + self.sanbayhacanh.tensanbay
+        return self.sanbaycatcanh.diadiem + " - " + self.sanbayhacanh.diadiem
 
 
 class SanBayTrungGian (db.Model):
@@ -96,6 +96,7 @@ class LoaiVe (db.Model):
     maloaive = Column(Integer, primary_key=True, autoincrement=True)
     tenloaive = Column(String(20), nullable=False)
     giave = relationship('GiaVe', backref='loaive', lazy=True)
+    vemaybay = relationship('VeMayBay', backref='loaive', lazy=True)
 
     def __str__(self):
         return self.tenloaive
@@ -110,16 +111,18 @@ class GiaVe (db.Model):
     soghedat = Column(Integer, nullable=False)
 
 
-class TrangThaiVe(enum.Enum):
-    DATHANHTOAN = 1
-    DADAT = 2
+class TrangThaiVe (db.Model):
+    __table_args__ = {'extend_existing': True}
+    matrangthai = Column(Integer, primary_key=True, autoincrement=True)
+    tentrangthao = Column(String(20), nullable=False)
+    vemaybay = relationship('VeMayBay', backref="trangthaive", lazy=True)
 
 
 class VeMayBay (db.Model):
     __table_args__ = {'extend_existing': True}
     mave = Column(Integer, primary_key=True, autoincrement=True)
-    ngaykhoitao = Column(DateTime, default=datetime.now())
-    trangthai = Column(Enum(TrangThaiVe), nullable=False)
+    ngaykhoitao = Column(DateTime, default=datetime.utcnow())
+    trangthai = Column(Integer, ForeignKey(TrangThaiVe.matrangthai), nullable=False)
     gia = Column(DECIMAL(11, 2), nullable=False)
     giamgia = Column(Float, default=0)
     maloaive = Column(Integer, ForeignKey(LoaiVe.maloaive), nullable=False)
@@ -127,9 +130,11 @@ class VeMayBay (db.Model):
     makhachhang = Column(Integer, ForeignKey(KhachHang.makhachhang), nullable=False)
 
 
-class LoaiTaiKhoan(enum.Enum):
-    ADMIN = 1
-    NHANVIEN = 2
+class LoaiTaiKhoan(db.Model):
+    __table_args__ = {'extend_existing': True}
+    maloai = Column(Integer, primary_key=True, autoincrement=True)
+    tenloai = Column(String(20), nullable=False)
+    taikhoan = relationship('TaiKhoan', backref='loaitaikhoan', lazy=True)
 
 
 class TaiKhoan (db.Model, UserMixin):
@@ -138,11 +143,13 @@ class TaiKhoan (db.Model, UserMixin):
     tentaikhoan = Column(String(20), nullable=False)
     matkhau = Column(String(100), nullable=False)
     active = Column(Boolean, default=True)
-    loaitaikhoan = Column(Enum(LoaiTaiKhoan), default=LoaiTaiKhoan.NHANVIEN)
+    maloai = Column(Integer, ForeignKey(LoaiTaiKhoan.maloai), default=2)
     manguoidung = Column(Integer, ForeignKey(NguoiDung.manguoidung), nullable=False)
 
     def __str__(self):
         return self.tentaikhoan
+
+
 
 
 # class ThemLichBay(BaseView):

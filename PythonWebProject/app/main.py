@@ -1,12 +1,12 @@
-
-from app import app, login, dao, restapi
+from app import app, login, dao, restapi, decorator
 from app.admin import *
-from flask import render_template, redirect, request, session
+from flask import render_template, redirect, request, session, jsonify
 from flask_login import login_user
 import hashlib
 
 
 @app.route("/")
+@decorator.login_required_user
 def index():
     sanbay = dao.read_san_bay()
     loaive = dao.read_loai_ve()
@@ -32,33 +32,79 @@ def login_admin():
             session['err-login'] = err
         return redirect('/admin')
 
-@app.route("/ticket-detail", methods=['get', 'post'] )
-def ticket_detail():
-    return render_template("ticket-detail.html")
 
-@app.route("/ticket-list", methods=['get', 'post'] )
+@app.route("/ticket-list", methods=['get', 'post'])
+@decorator.login_required_user
 def ticket_list():
-    return render_template("nhanvien/ticket-list.html")
+    diemdi = request.form.get("diemdi")
+    diemden = request.form.get("diemden")
+    madiemdi = request.form.get("madiemdi")
+    madiemden = request.form.get("madiemden")
+    ngaykhoihanh = request.form.get("ngaykhoihanh")
+    maloaive = request.form.get("maloaive")
+    return render_template("nhanvien/ticket-list.html", diemdi=diemdi, diemden=diemden, madiemdi=madiemdi,
+                           madiemden=madiemden, ngaykhoihanh=ngaykhoihanh, maloaive=maloaive)
 
-@app.route("/ticket-fill-form", methods=['get', 'post'] )
+
+@app.route("/ticket-detail", methods=['get', 'post'])
+@decorator.login_required_user
+def ticket_detail():
+    machuyenbay = request.args.get("machuyenbay")
+    maloaive = request.args.get("maloaive")
+    giave = request.args.get("giave")
+    data = dao.read_lich_chuyen_bay_theo_ma_chuyen_ma_loai_ve(machuyenbay, maloaive)
+    return render_template("nhanvien/ticket-detail.html", data=data, giave=giave)
+
+
+@app.route("/ticket-fill-form", methods=['get', 'post'])
+@decorator.login_required_user
 def ticket_fill_form():
-    return render_template("ticket-fill-form.html")
+    machuyenbay = request.args.get("machuyenbay")
+    maloaive = request.args.get("maloaive")
+    giave = request.args.get("giave")
+    data = dao.read_lich_chuyen_bay_theo_ma_chuyen_ma_loai_ve(machuyenbay, maloaive)
+    return render_template("nhanvien/ticket-fill-form.html", data=data, giave=giave)
 
-@app.route("/ticket-info", methods=['get', 'post'] )
+@app.route("/ticket-info", methods=['get', 'post'])
+@decorator.login_required_user
 def ticket_info():
-    return render_template("ticket-info.html")
+    giave = request.form.get("giave")
+    data = jsonify(request.form)
+    data = data.json
+    ve = dao.read_lich_chuyen_bay_theo_ma_chuyen_ma_loai_ve(data['machuyenbay'], data['maloaive'])
+    return render_template("nhanvien/ticket-info.html", data=data, ve=ve, giave=giave)
 
-@app.route("/ticket-manager", methods=['get', 'post'] )
+@app.route("/ticket-manager", methods=['get', 'post'])
+@decorator.login_required_user
 def ticket_manager():
-    return render_template("ticket-manager.html")
+    return render_template("nhanvien/ticket-manager.html")
 
-@app.route("/nhanvien/flight-manager", methods=['get', 'post'] )
+@app.route("/nhanvien/flight-manager", methods=['get', 'post'])
+@decorator.login_required_user
 def flight_manager():
     return render_template("nhanvien/flight-manager.html")
 
-@app.route("/login", methods=['get', 'post'] )
+@app.route("/login", methods=['get', 'post'])
 def login():
-    return render_template("login.html")
+    err = False
+    if request.method == 'POST':
+        tentaikhoan = request.form.get("tentaikhoan")
+        matkhau = request.form.get("matkhau")
+        matkhau = str(hashlib.md5(matkhau.strip().encode("utf-8")).hexdigest())
+        # import pdb
+        # pdb.set_trace()
+        taikhoan = TaiKhoan.query.filter(TaiKhoan.tentaikhoan == tentaikhoan.strip(), TaiKhoan.matkhau == matkhau).first()
+        if taikhoan:
+            login_user(user=taikhoan)
+            return redirect('/')
+        err = True
+    return render_template("nhanvien/login.html", err=err)
+
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect('/login')
 
 
 if __name__ == "__main__":
