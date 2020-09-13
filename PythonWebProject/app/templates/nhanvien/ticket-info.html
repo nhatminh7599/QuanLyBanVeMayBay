@@ -250,7 +250,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Kiểm tra lại</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" id="datve"
-                        data-target="" onclick="thanhtoan(2, datve)">Có, tiến hành đặt vé
+                        data-target="" onmousedown="thanhtoan(2, 'datve')">Có, tiến hành đặt vé
                 </button>
             </div>
         </div>
@@ -342,7 +342,6 @@
     </div>
 </div>
 
-{{data}} {{ve}}
 <script>
     function thanhtoan (trangthai, id) {
         fetch("http://127.0.0.1:5000/api/them-ve", {
@@ -358,7 +357,7 @@
                 'ten_khach_hang': "{{data.ho}} {{data.ten}}",
                 'cmnd': {{data.cmnd}},
                 'sdt': "{{data.sdt}}",
-                'email': {{data.email}},
+                'email': "{{data.email}}",
                 'gioi_tinh': "{{data.gioitinh}}"
             })
         }).then(res => res.json()).then(res => {

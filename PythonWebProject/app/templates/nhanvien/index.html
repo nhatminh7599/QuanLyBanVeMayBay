@@ -49,9 +49,54 @@
         </div>
     </div>
 </section>
+
 </body>
 
 {% endblock %}
+
+{% block slide %}
+<section class="popular_place padding_top">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5">
+                <div class="section_tittle text-center">
+                    <img src="static/img/section_tittle_img.png" alt="">
+                    <h2>MiDo. <span>Flight</span></h2>
+                    <p>Quản lý hệ thống bán vé máy bay với sự
+                        hướng dẫn của thầy Dương Hữu Thành</p>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-4 col-sm-6">
+                <div class="single_popular_place">
+                    <img src="static/img/icon/place_icon_1.png" alt="">
+                    <h4>Quản lý vé</h4>
+                    <p>Chỉnh sửa thông tin vé, tìm kiếm danh sách,...</p>
+                    <a href="{{ url_for('ticket_manager')}}" class="btn1">Go now</a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-6">
+                <div class="single_popular_place">
+                    <img src="static/img/icon/place_icon_2.png" alt="">
+                    <h4>Quản lý lịch bay</h4>
+                    <p>Thêm lịch bay, tìm kiếm thông tin lịch bay....</p>
+                    <a href="{{ url_for('flight_manager')}}" class="btn1">Go now</a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-6">
+                <div class="single_popular_place">
+                    <img src="static/img/icon/place_icon_3.png" alt="">
+                    <h4>Thống kê</h4>
+                    <p>Thống kê doanh thu theo tháng, năm</p>
+                    <a href="{{ url_for('report')}}" class="btn1">Go now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
 {% block scripts %}
 
 <script>

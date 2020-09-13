@@ -1,9 +1,9 @@
 -- MySQL dump 10.13  Distrib 8.0.21, for Win64 (x86_64)
 --
--- Host: localhost    Database: ql_maybay
+-- Host: 127.0.0.1    Database: ql_maybay
 -- ------------------------------------------------------
 -- Server version	8.0.21
-use ql_maybay;
+
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -41,7 +41,7 @@ CREATE TABLE `gia_ve` (
 
 LOCK TABLES `gia_ve` WRITE;
 /*!40000 ALTER TABLE `gia_ve` DISABLE KEYS */;
-INSERT INTO `gia_ve` VALUES (1,1,220000.00,20,10),(1,2,300500.00,10,10),(2,1,150000.00,10,15),(2,2,200000.00,10,20);
+INSERT INTO `gia_ve` VALUES (1,1,220000.00,18,2),(1,2,300500.00,10,0),(2,1,150000.00,10,0),(2,2,200000.00,10,0);
 /*!40000 ALTER TABLE `gia_ve` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -60,7 +60,7 @@ CREATE TABLE `khach_hang` (
   `email` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `gioitinh` varchar(3) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`makhachhang`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -69,6 +69,7 @@ CREATE TABLE `khach_hang` (
 
 LOCK TABLES `khach_hang` WRITE;
 /*!40000 ALTER TABLE `khach_hang` DISABLE KEYS */;
+INSERT INTO `khach_hang` VALUES (1,'test  + minh',123,'123213','123','Nam'),(2,'test  + minh',123,'123213','123','Nam'),(3,'test  + minh',123,'123213','123','Nam'),(4,'test  + minh',123,'123213','123','Nam'),(5,'test  + minh',123,'123213','123','Nam'),(6,'test  + minh',123,'123213','123','Nam'),(7,'test  + minh',123,'123213','123','Nam'),(8,'test  + minh',123,'123213','123','Nam'),(9,'test  + minh',123,'123213','123','Nam');
 /*!40000 ALTER TABLE `khach_hang` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -192,6 +193,7 @@ DROP TABLE IF EXISTS `quy_dinh`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `quy_dinh` (
   `maquydinh` int NOT NULL AUTO_INCREMENT,
+  `tenquydinh` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `noidung` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `manguoidung` int NOT NULL,
   PRIMARY KEY (`maquydinh`),
@@ -306,7 +308,7 @@ CREATE TABLE `trang_thai_ve` (
   `matrangthai` int NOT NULL AUTO_INCREMENT,
   `tentrangthao` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`matrangthai`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -315,6 +317,7 @@ CREATE TABLE `trang_thai_ve` (
 
 LOCK TABLES `trang_thai_ve` WRITE;
 /*!40000 ALTER TABLE `trang_thai_ve` DISABLE KEYS */;
+INSERT INTO `trang_thai_ve` VALUES (1,'Đã thanh toán'),(2,'Đã đặt'),(3,'ád');
 /*!40000 ALTER TABLE `trang_thai_ve` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -328,21 +331,22 @@ DROP TABLE IF EXISTS `ve_may_bay`;
 CREATE TABLE `ve_may_bay` (
   `mave` int NOT NULL AUTO_INCREMENT,
   `ngaykhoitao` datetime DEFAULT NULL,
-  `trangthai` tinyint(1) NOT NULL,
+  `trangthai` int NOT NULL,
   `gia` decimal(11,2) NOT NULL,
   `giamgia` float DEFAULT NULL,
   `maloaive` int NOT NULL,
   `machuyenbay` int NOT NULL,
   `makhachhang` int NOT NULL,
   PRIMARY KEY (`mave`),
+  KEY `trangthai` (`trangthai`),
   KEY `maloaive` (`maloaive`),
   KEY `machuyenbay` (`machuyenbay`),
   KEY `makhachhang` (`makhachhang`),
-  CONSTRAINT `ve_may_bay_ibfk_1` FOREIGN KEY (`maloaive`) REFERENCES `loai_ve` (`maloaive`),
-  CONSTRAINT `ve_may_bay_ibfk_2` FOREIGN KEY (`machuyenbay`) REFERENCES `lich_chuyen_bay` (`machuyenbay`),
-  CONSTRAINT `ve_may_bay_ibfk_3` FOREIGN KEY (`makhachhang`) REFERENCES `khach_hang` (`makhachhang`),
-  CONSTRAINT `ve_may_bay_chk_1` CHECK ((`trangthai` in (0,1)))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  CONSTRAINT `ve_may_bay_ibfk_1` FOREIGN KEY (`trangthai`) REFERENCES `trang_thai_ve` (`matrangthai`),
+  CONSTRAINT `ve_may_bay_ibfk_2` FOREIGN KEY (`maloaive`) REFERENCES `loai_ve` (`maloaive`),
+  CONSTRAINT `ve_may_bay_ibfk_3` FOREIGN KEY (`machuyenbay`) REFERENCES `lich_chuyen_bay` (`machuyenbay`),
+  CONSTRAINT `ve_may_bay_ibfk_4` FOREIGN KEY (`makhachhang`) REFERENCES `khach_hang` (`makhachhang`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -351,6 +355,7 @@ CREATE TABLE `ve_may_bay` (
 
 LOCK TABLES `ve_may_bay` WRITE;
 /*!40000 ALTER TABLE `ve_may_bay` DISABLE KEYS */;
+INSERT INTO `ve_may_bay` VALUES (1,'2020-09-10 00:00:00',1,220000.00,0,1,1,1),(2,NULL,1,222.00,NULL,1,1,2),(3,'2020-09-10 00:00:00',1,222.00,0,2,1,3),(4,'2020-09-10 00:00:00',1,212.00,0,2,1,4),(5,'2020-09-10 00:00:00',1,212.00,0,2,1,4),(6,'2020-09-10 00:00:00',1,212.00,0,2,1,4),(7,'2020-09-10 00:00:00',1,212.00,0,2,1,4),(8,'2020-09-10 00:00:00',1,212.00,0,2,1,4),(9,'2020-09-10 00:00:00',1,21.00,0,2,1,4),(10,'2020-09-10 00:00:00',1,220000.00,0,1,1,8);
 /*!40000 ALTER TABLE `ve_may_bay` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -367,4 +372,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-09-10 20:39:23
+-- Dump completed on 2020-09-13 18:49:57

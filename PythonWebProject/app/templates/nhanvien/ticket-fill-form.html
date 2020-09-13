@@ -45,7 +45,7 @@
                                                 <label class="font-weight-bold">Email<span
                                                         class="txt-style-4">*</span>
                                                 </label>
-                                                <input type="text" class="form-control" name="email"
+                                                <input type="email" class="form-control" name="email"
                                                        placeholder="vd: email@example.com" required="true">
                                             </div>
                                         </div>
@@ -61,7 +61,8 @@
                                                 <label class="font-weight-bold">Giới tính<span
                                                         class="txt-style-4">*</span>
                                                 </label>
-                                                <select id="inputState1" class="form-control" name="gioitinh" required="true">
+                                                <select id="inputState1" class="form-control" name="gioitinh"
+                                                        required="true">
                                                     <option selected>Nam</option>
                                                     <option>Nữ</option>
                                                 </select>
@@ -115,7 +116,7 @@
         </div>
     </div>
 </div>
-{{data}} {{giave}}
+
 <!-- Modal chi tiết tuyến bay -->
 <div class="modal fade modal-style" id="exampleModalCenter" tabindex="-1" role="dialog"
      aria-labelledby="exampleModalCenterTitle"
@@ -214,6 +215,7 @@
     </div>
 </div>
 </body>
+
 <script>
     function mySubmit () {
         var f = document.getElementById('form')
@@ -238,5 +240,7 @@
         input_giave.value = {{giave}}
         f.appendChild(input_giave);
     }
+
+
 </script>
 {% endblock %}

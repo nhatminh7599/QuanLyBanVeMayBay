@@ -1,5 +1,8 @@
+from sqlalchemy import func, extract
+from flask_paginate import Pagination, get_page_parameter
 from app.models import *
 import datetime
+from datetime import timedelta
 
 
 def read_san_bay():
@@ -14,13 +17,54 @@ def read_san_bay():
     return data
 
 
+def them_lich_chuyen_bay(sanbaycatcanh, sanbayhacanh, ngaykhoihanh, thoigianbay, soluongghehang1, soluongghehang2,
+                         giavehang1, giavehang2, sbtrunggian1=None, tgdung1=None, sbtrunggian2=None, tgdung2=None):
+    try:
+        chuyenbay = LichChuyenBay(masanbaycatcanh=sanbaycatcanh, masanbayhacanh=sanbayhacanh, ngaykhoihanh=ngaykhoihanh,
+                                  thoigianbay=thoigianbay, soluongghehang1=soluongghehang1, soluongghehang2=soluongghehang2)
+        db.session.add(chuyenbay)
+        db.session.commit()
+        giave1 = GiaVe(machuyenbay=chuyenbay.machuyenbay, maloaive=1, giave=giavehang1,
+                       soghetrong=soluongghehang1, soghedat=0)
+        giave2 = GiaVe(machuyenbay=chuyenbay.machuyenbay, maloaive=2, giave=giavehang2,
+                       soghetrong=soluongghehang2, soghedat=0)
+        db.session.add(giave1)
+        db.session.add(giave2)
+
+        db.session.commit()
+
+        if tgdung1 != '' and tgdung2 != '':
+            diemdung1 = SanBayTrungGian(masanbay=sbtrunggian1, thoigiandung=tgdung1, machuyenbay=chuyenbay.machuyenbay)
+            diemdung2 = SanBayTrungGian(masanbay=sbtrunggian2, thoigiandung=tgdung2, machuyenbay=chuyenbay.machuyenbay)
+            db.session.add(diemdung1, diemdung2)
+            db.session.commit()
+        else:
+            if tgdung1 != '':
+                diemdung1 = SanBayTrungGian(masanbay=sbtrunggian1, thoigiandung=tgdung1,
+                                            machuyenbay=chuyenbay.machuyenbay)
+                db.session.add(diemdung1)
+                db.session.commit()
+
+            else:
+                db.session.commit()
+        return True
+    except:
+        return False
+
+
+
 def read_lich_chuyen_bay():
     data = []
     machuyen = []
+    ngay_khoi_hanh = datetime.datetime.now() + timedelta(11)
     for ve in GiaVe.query.filter(GiaVe.soghetrong > 0).all():
         if ve.machuyenbay not in machuyen:
             machuyen.append(ve.machuyenbay)
-    lichbay = LichChuyenBay.query.filter(LichChuyenBay.machuyenbay.in_(machuyen), LichChuyenBay.ngaykhoihanh > datetime.datetime.now()).all()
+    lichbay = LichChuyenBay.query.filter(LichChuyenBay.machuyenbay.in_(machuyen),
+                                         LichChuyenBay.ngaykhoihanh > datetime.datetime.now(),
+                                         LichChuyenBay.ngaykhoihanh < ngay_khoi_hanh).all()
+    # import pdb
+    # pdb.set_trace()
     for lich in lichbay:
         san = []
         soghetrong = []
@@ -37,12 +81,16 @@ def read_lich_chuyen_bay():
         if sanbaytrunggian:
             for idx, sanbay in enumerate(sanbaytrunggian):
                 san.append({
-                    'sanbaytrunggian' + str(idx + 1): sanbay.sanbaytrunggian.__str__()
+                    'sanbaytrunggian' + str(idx + 1): sanbay.sanbaytrunggian.__str__(),
+                    'thoigiandung': sanbay.thoigiandung
                 })
         data.append({
+            'machuyenbay': lich.machuyenbay,
             'tenchuyenbay': lich.__str__(),
             'sanbaycatcanh': lich.sanbaycatcanh.__str__(),
             'sanbayhacanh': lich.sanbayhacanh.__str__(),
+            'diadiemdi': lich.sanbaycatcanh.diadiem,
+            'diadiemden': lich.sanbayhacanh.diadiem,
             'ngaykhoihanh': str(lich.ngaykhoihanh),
             'thoigianbay': lich.thoigianbay,
             'soluongghehang1': lich.soluongghehang1,
@@ -69,7 +117,8 @@ def read_lich_chuyen_bay_id(machuyenbay):
     if sanbaytrunggian:
         for idx, sanbay in enumerate(sanbaytrunggian):
             san.append({
-                'sanbaytrunggian' + str(idx + 1): sanbay.sanbaytrunggian.__str__()
+                'sanbaytrunggian': sanbay.sanbaytrunggian.__str__(),
+                'thoigiandung': sanbay.thoigiandung
             })
     data = {
         'tenchuyenbay': lich.__str__(),
@@ -88,10 +137,16 @@ def read_lich_chuyen_bay_id(machuyenbay):
 def read_lich_chuyen_bay_san_bay(diemdi, diemden):
     data = []
     soghetrong = []
-    sanbaydi = SanBay.query.filter(SanBay.tensanbay.contains(diemdi)).all()
-    sanbayden = SanBay.query.filter(SanBay.tensanbay.contains(diemden)).all()
-    lichbay = LichChuyenBay.query.filter(LichChuyenBay.masanbaycatcanh == sanbaydi[0].masanbay,
-                                         LichChuyenBay.masanbayhacanh == sanbayden[0].masanbay).all()
+    sanbaydi = SanBay.query.filter(SanBay.diadiem.contains(diemdi)).all()
+    masanbaydi = []
+    masanbayden = []
+    for sanbay in sanbaydi:
+        masanbaydi.append(sanbay.masanbay)
+    sanbayden = SanBay.query.filter(SanBay.diadiem.contains(diemden)).all()
+    for sanbay in sanbayden:
+        masanbayden.append(sanbay.masanbay)
+    lichbay = LichChuyenBay.query.filter(LichChuyenBay.masanbaycatcanh.in_(masanbaydi),
+                                         LichChuyenBay.masanbayhacanh.in_(masanbayden)).all()
     for lich in lichbay:
         san = []
         giave = GiaVe.query.filter(GiaVe.machuyenbay == lich.machuyenbay).all()
@@ -106,12 +161,16 @@ def read_lich_chuyen_bay_san_bay(diemdi, diemden):
         if sanbaytrunggian:
             for idx, sanbay in enumerate(sanbaytrunggian):
                 san.append({
-                    'sanbaytrunggian' + str(idx + 1): sanbay.sanbaytrunggian.__str__()
+                    'sanbaytrunggian': sanbay.sanbaytrunggian.__str__(),
+                    'thoigiandung': sanbay.thoigiandung
                 })
         data.append({
+            'machuyenbay': lich.machuyenbay,
             'tenchuyenbay': lich.__str__(),
             'sanbaycatcanh': lich.sanbaycatcanh.__str__(),
             'sanbayhacanh': lich.sanbayhacanh.__str__(),
+            'diadiemdi': lich.sanbaycatcanh.diadiem,
+            'diadiemden': lich.sanbayhacanh.diadiem,
             'ngaykhoihanh': str(lich.ngaykhoihanh),
             'thoigianbay': lich.thoigianbay,
             'soluongghehang1': lich.soluongghehang1,
@@ -124,7 +183,7 @@ def read_lich_chuyen_bay_san_bay(diemdi, diemden):
 
 def read_lich_chuyen_bay_form(diemdi, diemden, ngaykhoihanh, loaive):
     data = []
-    soghetrong = []
+
     machuyenbay = []
     giave = GiaVe.query.filter(GiaVe.maloaive == int(loaive)).all()
     for ve in giave:
@@ -133,10 +192,12 @@ def read_lich_chuyen_bay_form(diemdi, diemden, ngaykhoihanh, loaive):
     sanbayden = SanBay.query.get(int(diemden))
     lichbay = LichChuyenBay.query.filter(LichChuyenBay.masanbaycatcanh == sanbaydi.masanbay,
                                          LichChuyenBay.masanbayhacanh == sanbayden.masanbay,
-                                         LichChuyenBay.ngaykhoihanh >= datetime.datetime.strptime(ngaykhoihanh, '%Y-%m-%d'),
+                                         LichChuyenBay.ngaykhoihanh >= datetime.datetime.strptime(ngaykhoihanh,
+                                                                                                  '%Y-%m-%d'),
                                          LichChuyenBay.machuyenbay.in_(machuyenbay)).all()
     for lich in lichbay:
         san = []
+        soghetrong = []
         giave = GiaVe.query.filter(GiaVe.machuyenbay == lich.machuyenbay, GiaVe.maloaive == int(loaive)).all()
         for ve in giave:
             soghetrong.append({
@@ -202,7 +263,6 @@ def read_lich_chuyen_bay_theo_ma_chuyen_ma_loai_ve(machuyenbay, maloaive):
     return data
 
 
-
 def read_loai_ve():
     data = []
     loaive = LoaiVe.query.all()
@@ -230,9 +290,9 @@ def read_loai_ve_theo_chuyen(ma_chuyen):
 def tim_khach_hang(keyword):
     data = []
     khach_hang = KhachHang.query
-    khach_hang = khach_hang.filter((KhachHang.cmnd == int(keyword)) | (KhachHang.sdt == keyword)).all()
+    khach_hang = khach_hang.filter((KhachHang.cmnd == keyword) | (KhachHang.sdt == keyword)).all()
     for khach in khach_hang:
-        ve_may_bay = VeMayBay.query.filter(VeMayBay.makhachhang == khach.makhachhang).all()
+        ve_may_bay = VeMayBay.query.filter(VeMayBay.makhachhang == khach.makhachhang)
         ve = []
         for vemaybay in ve_may_bay:
             ve.append({
@@ -313,10 +373,14 @@ def them_ve(trang_thai, gia, ma_loai_ve, ma_chuyen_bay, ma_khach_hang, giam_gia=
         return False
 
 
-def xoa_ve(ma_ve):
+def xoa_ve(ma_ve, ma_khach_hang):
     try:
         ve = VeMayBay.query.get(int(ma_ve))
         db.session.delete(ve)
+
+        khach_hang = KhachHang.query.get(int(ma_khach_hang))
+        db.session.delete(khach_hang)
+
         db.session.commit()
         return True
     except:
@@ -324,7 +388,6 @@ def xoa_ve(ma_ve):
 
 
 def sua_trang_thai_ve(ma_ve):
-
     ve = VeMayBay.query.get(int(ma_ve))
     try:
         ve.trangthai = int(1)
@@ -333,3 +396,60 @@ def sua_trang_thai_ve(ma_ve):
         return True
     except:
         return False
+
+
+def doanh_thu_theo_thang(date):
+    data = []
+    thang = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S').month
+    nam = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S').year
+    lich_chuyen_bay = LichChuyenBay.query.filter(extract('month', LichChuyenBay.ngaykhoihanh) == int(thang),
+                                                 extract('year', LichChuyenBay.ngaykhoihanh) == int(nam)).all()
+    for chuyen_bay in lich_chuyen_bay:
+        tongsove = 0
+        doanhthu = db.session.query(func.sum(VeMayBay.gia)) \
+            .filter(VeMayBay.machuyenbay == chuyen_bay.machuyenbay).scalar()
+        if doanhthu == None:
+            doanhthu = 0
+        giave = GiaVe.query.filter(GiaVe.machuyenbay == chuyen_bay.machuyenbay).all()
+        for ve in giave:
+            tongsove += int(ve.soghedat)
+        soghetrong = int(chuyen_bay.soluongghehang1) + int(chuyen_bay.soluongghehang2)
+        tyle = tongsove / soghetrong
+        # import pdb
+        # pdb.set_trace()
+        data.append({
+            'ma_chuyen_bay': chuyen_bay.machuyenbay,
+            'so_ve': tongsove,
+            'ty_le': tyle,
+            'doanh_thu': int(doanhthu),
+            'thang': thang
+        })
+    return data
+
+
+def doanh_thu_theo_nam(date):
+    data = []
+    nam = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S').year
+    for thang in range(1, 12):
+        doanhthutheothang = doanh_thu_theo_thang(str(datetime.datetime(nam, int(thang), 1)))
+        if doanhthutheothang:
+            doanhthu = 0
+            sove = 0
+            soghetrong = 0
+            sochuyen = len(doanhthutheothang)
+            for doanhthuthang in doanhthutheothang:
+                doanhthu += doanhthuthang['doanh_thu']
+                sove += int(doanhthuthang['so_ve'])
+            lich_chuyen_bay = LichChuyenBay.query.filter(extract('month', LichChuyenBay.ngaykhoihanh) == int(thang),
+                                                         extract('year', LichChuyenBay.ngaykhoihanh) == int(nam)).all()
+            for chuyen_bay in lich_chuyen_bay:
+                soghetrong += int(chuyen_bay.soluongghehang1) + int(chuyen_bay.soluongghehang2)
+            tyle = sove / soghetrong
+            data.append({
+                'thang': thang,
+                'so_chuyen_bay': sochuyen,
+                'doanh_thu': int(doanhthu),
+                'ty_le': tyle,
+                'nam': nam
+            })
+    return data

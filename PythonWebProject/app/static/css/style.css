@@ -117,6 +117,7 @@ input:hover, input:focus {
   /* line 48, /Applications/MAMP/htdocs/palash/cl/july 2019/189 travel/189 travel html/sass/_common.scss */
   .padding_top {
     padding-top: 70px;
+    margin-top: 200px;
   }
 }
 
@@ -124,6 +125,7 @@ input:hover, input:focus {
   /* line 48, /Applications/MAMP/htdocs/palash/cl/july 2019/189 travel/189 travel html/sass/_common.scss */
   .padding_top {
     padding-top: 70px;
+    margin-top: 240px;
   }
 }
 
@@ -2460,7 +2462,7 @@ ul {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  height: 1050px;
+  height: 890px;
   background-color: #ffcc00;
 }
 
@@ -2580,7 +2582,7 @@ ul {
 /************** search css start ***************/
 /* line 2, /Applications/MAMP/htdocs/palash/cl/july 2019/189 travel/189 travel html/sass/_search.scss */
 .search_your_country {
-  max-width: 1690px;
+  /* max-width: 1690px; */
   margin: 0 auto;
   background-color: #f0f0f0;
   box-shadow: -1.717px 8.835px 85.56px 6.44px rgba(170, 170, 170, 0.29);

@@ -14,22 +14,62 @@ def san_bay():
 
 @app.route("/api/lich-chuyen-bay", methods=['get', 'post'])
 def lich_chuyen_bay():
-    try:
-    # if request.json["diemdi"] and request.json["diemden"] \
-    #         and request.json["ngaykhoihanh"] and request.json["loaive"]:
-        diemdi = request.json["diemdi"]
-        diemden = request.json["diemden"]
-        ngaykhoihanh = request.json["ngaykhoihanh"]
-        loaive = request.json["loaive"]
-        data = dao.read_lich_chuyen_bay_form(diemdi, diemden, ngaykhoihanh, loaive)
-    # else:
-    except Exception:
-        data = dao.read_lich_chuyen_bay()
+    diemdi = request.json['diemdi']
+    diemden = request.json['diemden']
+    ngaykhoihanh = request.json['ngaykhoihanh']
+    loaive = request.json['loaive']
+    data = dao.read_lich_chuyen_bay_form(diemdi, diemden, ngaykhoihanh, loaive)
     return jsonify(
         message="success",
         data=data,
         status=200
     )
+
+
+@app.route("/api/them-lich-chuyen-bay", methods=['get', 'post'])
+def them_lich_chuyen_bay():
+    sanbaycatcanh = int(request.json['diaDiemKH'])
+    sanbayhacanh = int(request.json['diaDiemDi'])
+    ngaykhoihanh = request.json['ngaydi']
+    thoigianbay = int(request.json['tgBay'])
+    soluongghehang1 = int(request.json['slGheHang1'])
+    soluongghehang2 = int(request.json['slGheHang2'])
+    giavehang1 = int(request.json['giavehang1'])
+    giavehang2 = int(request.json['giavehang2'])
+
+    tgdung1 = int(request.json["tgDung1"]) if request.json["tgDung1"] else None
+    tgdung2 = int(request.json["tgDung2"]) if request.json["tgDung2"] else None
+    # import pdb
+    # pdb.set_trace()
+    if tgdung1:
+        sbtrunggian1 = request.json["diemDung1"]
+        if tgdung2:
+            sbtrunggian2 = request.json["diemDung2"]
+            data = dao.them_lich_chuyen_bay(sanbaycatcanh, sanbayhacanh, ngaykhoihanh, thoigianbay, soluongghehang1,
+                                            soluongghehang2, giavehang1, giavehang2, sbtrunggian1, tgdung1,
+                                            sbtrunggian2, tgdung2)
+            return jsonify(
+                message="success",
+                data=data,
+                status=200
+            )
+        else:
+            data = dao.them_lich_chuyen_bay(sanbaycatcanh, sanbayhacanh, ngaykhoihanh, thoigianbay, soluongghehang1,
+                                            soluongghehang2, giavehang1, giavehang2, sbtrunggian1, tgdung1)
+            return jsonify(
+                message="success",
+                data=data,
+                status=200
+            )
+    else:
+        data = dao.them_lich_chuyen_bay(sanbaycatcanh, sanbayhacanh, ngaykhoihanh, thoigianbay, soluongghehang1,
+                                        soluongghehang2, giavehang1, giavehang2)
+
+        return jsonify(
+            message="success",
+            data=data,
+            status=200
+        )
 
 
 @app.route("/api/read-lich-chuyen-bay-theo-ma-chuyen-ma-loai-ve", methods=['get', 'post'])
@@ -44,8 +84,9 @@ def read_lich_chuyen_bay_theo_ma_chuyen_ma_loai_ve():
     )
 
 
-@app.route("/api/lich-chuyen-bay/<int:machuyen>", methods=['get', 'post'])
-def lich_chuyen_bay_id(machuyen):
+@app.route("/api/lich-chuyen-bay-id", methods=['get', 'post'])
+def lich_chuyen_bay_id():
+    machuyen = request.json['machuyenbay']
     data = dao.read_lich_chuyen_bay_id(machuyen)
     return jsonify(
         message="success",
@@ -77,6 +118,7 @@ def gia_ve_theo_chuyen(ma_chuyen):
 @app.route("/api/khach-hang", methods=['get', 'post'])
 def khach_hang():
     keyword = request.json["kw"] if request.json["kw"] else None
+
     data = dao.tim_khach_hang(keyword=keyword)
     return jsonify(
         message="success",
@@ -120,7 +162,8 @@ def them_ve():
 @app.route("/api/del-ve", methods=['delete'])
 def xoa_ve():
     ma_ve = request.json["mave"]
-    if dao.xoa_ve(ma_ve):
+    ma_khach_hang = request.json["makhachhang"]
+    if dao.xoa_ve(ma_ve, ma_khach_hang):
         return jsonify(
             message="success",
             status=200
@@ -177,3 +220,34 @@ def chi_tiet_ve():
         message="fail",
         status=400
     )
+
+
+@app.route("/api/doanh-thu-theo-thang", methods=['post', 'get'])
+def doanh_thu_theo_thang():
+    date = request.json['date']
+    if dao.doanh_thu_theo_thang(date):
+        return jsonify(
+            message="success",
+            data=dao.doanh_thu_theo_thang(date),
+            status=200
+        )
+    return jsonify(
+        message="fail",
+        status=400
+    )
+
+
+@app.route("/api/doanh-thu-theo-nam", methods=['post', 'get'])
+def doanh_thu_theo_nam():
+    date = request.args['date']
+    if dao.doanh_thu_theo_nam(date):
+        return jsonify(
+            message="success",
+            data=dao.doanh_thu_theo_nam(date),
+            status=200
+        )
+    return jsonify(
+        message="fail",
+        status=400
+    )
+

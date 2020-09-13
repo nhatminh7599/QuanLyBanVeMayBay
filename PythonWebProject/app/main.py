@@ -24,9 +24,11 @@ def login_admin():
         tentaikhoan = request.form.get("tentaikhoan")
         matkhau = request.form.get("matkhau")
         matkhau = str(hashlib.md5(matkhau.strip().encode("utf-8")).hexdigest())
-        taikhoan = TaiKhoan.query.filter(TaiKhoan.tentaikhoan == tentaikhoan.strip(), TaiKhoan.matkhau == matkhau, TaiKhoan.loaitaikhoan == LoaiTaiKhoan.ADMIN).first()
+        taikhoan = TaiKhoan.query.filter(TaiKhoan.tentaikhoan == tentaikhoan.strip(),
+                                         TaiKhoan.matkhau == matkhau, TaiKhoan.maloai == 1).first()
         if taikhoan:
             login_user(user=taikhoan)
+            session['err-login'] = ''
         else:
             err = "Truy cập thất bại"
             session['err-login'] = err
@@ -79,10 +81,20 @@ def ticket_info():
 def ticket_manager():
     return render_template("nhanvien/ticket-manager.html")
 
-@app.route("/nhanvien/flight-manager", methods=['get', 'post'])
+@app.route("/flight-manager", methods=['get', 'post'])
 @decorator.login_required_user
 def flight_manager():
-    return render_template("nhanvien/flight-manager.html")
+    sanbay = dao.read_san_bay()
+    if request.method == 'POST':
+        diemdi = request.form["diemDi"] if request.form.get("diemDi") else None
+        diemden = request.form["diemDen"] if request.form.get("diemDen") else None
+        if diemdi != None and diemden != None:
+            lich = dao.read_lich_chuyen_bay_san_bay(diemdi, diemden)
+        else:
+            lich = dao.read_lich_chuyen_bay()
+    else:
+        lich = dao.read_lich_chuyen_bay()
+    return render_template("nhanvien/flight-manager.html", sanbay=sanbay, lich=lich)
 
 @app.route("/login", methods=['get', 'post'])
 def login():
@@ -91,8 +103,6 @@ def login():
         tentaikhoan = request.form.get("tentaikhoan")
         matkhau = request.form.get("matkhau")
         matkhau = str(hashlib.md5(matkhau.strip().encode("utf-8")).hexdigest())
-        # import pdb
-        # pdb.set_trace()
         taikhoan = TaiKhoan.query.filter(TaiKhoan.tentaikhoan == tentaikhoan.strip(), TaiKhoan.matkhau == matkhau).first()
         if taikhoan:
             login_user(user=taikhoan)
@@ -105,6 +115,18 @@ def login():
 def logout():
     logout_user()
     return redirect('/login')
+
+
+@app.route("/report", methods=['get', 'post'])
+def report():
+    doanhthutheonam = []
+    doanhthutheothang = []
+    if request.method == 'POST':
+        date = request.form.get('date')
+        date += ' 00:00:00'
+        doanhthutheonam = dao.doanh_thu_theo_nam(date)
+        doanhthutheothang = dao.doanh_thu_theo_thang(date)
+    return render_template("nhanvien/report.html", doanhthutheonam=doanhthutheonam, doanhthutheothang=doanhthutheothang)
 
 
 if __name__ == "__main__":

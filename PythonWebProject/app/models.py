@@ -7,14 +7,14 @@ from sqlalchemy.orm import relationship
 from flask_admin.contrib.sqla import ModelView
 from flask_login import UserMixin, current_user, logout_user
 from flask_admin import BaseView, expose
-from flask import redirect
+from flask import redirect, url_for, request, render_template
 
 
 class AdminView(ModelView):
     column_display_pk = True
 
     def is_accessible(self):
-        return current_user.is_authenticated and current_user.loaitaikhoan == LoaiTaiKhoan.ADMIN
+        return current_user.is_authenticated and current_user.maloai == 1
 
 
 class SanBay (db.Model):
@@ -49,6 +49,7 @@ class NguoiDung (db.Model):
 class QuyDinh (db.Model):
     __table_args__ = {'extend_existing': True}
     maquydinh = Column(Integer, primary_key=True, autoincrement=True)
+    tenquydinh = Column(String(50), nullable=False)
     noidung = Column(Text, nullable=False)
     manguoidung = Column(Integer, ForeignKey(NguoiDung.manguoidung), nullable=False)
 
@@ -172,6 +173,16 @@ class LogoutView(BaseView):
 
     def is_accessible(self):
         return current_user.is_authenticated
+
+
+@expose('/')
+def index(self):
+    if not current_user.is_authenticated:
+        return render_template('admin/page-not-found.html')
+    if current_user.maloai != 1:
+        logout_user()
+        return render_template('admin/page-not-found.html')
+    return self.render('admin/index.html')
 
 
 if __name__ == "__main__":
