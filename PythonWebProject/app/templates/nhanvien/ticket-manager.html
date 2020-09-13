@@ -1,9 +1,13 @@
 {% extends 'base.html' %}
 
 {% block body %}
+<<<<<<< HEAD
 
 
 <div class="container">
+=======
+<div class="container table-style">
+>>>>>>> 91331291e747ac7d1c3fad6ef5a38cb75a950589
     <div class="section-top-border">
         <div class="d-flex">
             <div class="mr-auto p-2"><h3 class="">Quản lý vé khách hàng</h3></div>
@@ -509,6 +513,7 @@
         }
     }
 
+<<<<<<< HEAD
 <!--    function timkh() {-->
 <!--        var kw = document.getElementById('input').value-->
 
@@ -603,6 +608,102 @@
 <!--            })-->
 <!--        })-->
 <!--    }-->
+=======
+    function timkh() {
+        var kw = document.getElementById('input').value
+
+        fetch ('http://127.0.0.1:5000/api/khach-hang', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'kw': `${kw}`
+            })
+        }).then(res => res.json()).then(res => {
+            var table = document.getElementById("table")
+            console.log(res.data)
+            data = res.data
+            table.innerHTML = `<div class="table-head">
+                                <div class="serial">Mã vé</div>
+                                <div class="country">Tên khách hàng</div>
+                                <div class="country">Tên chuyến bay</div>
+                                <div class="country">Loại vé</div>
+                                <div class="visit row-style">
+                                    <a class="dropdown-toggle" href="" type="button" id="dropdownMenuButton"
+                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Sắp xếp
+                                    </a>
+                                    <div class="dropdown-menu txt-style-8" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item txt-style-9" href="#">Action</a>
+                                        <a class="dropdown-item txt-style-9" href="#">Another action</a>
+                                        <a class="dropdown-item txt-style-9" href="#">Something else here</a>
+                                    </div>
+                                </div>
+                            </div>
+                            `
+            data.forEach(e => {
+
+                e.vemaybay.forEach(v => {
+                    if (v.trangthai == 1) {
+                        table.innerHTML += `<div class="table-row">
+                                        <div class="serial">${v.ma_ve}</div>
+                                        <div class="country" style="font-weight: 550;"
+                                             data-toggle="modal"
+                                             data-target="#exampleModalCenter"
+                                             onmousedown="showModalChiTietVe(${e.makhachhang}, ${v.ma_ve})">
+                                             ${e.ten}</div>
+                                        <div class="country">${v.tenchuyenbay}</div>
+                                        <div class="country">${v.loaive}</div>
+                                        <div class="visit txt-style-5 row-style">
+                                            <div style="color: #ccc; font-weight: 500; font-size: 16px;">
+                                                <span>(Đã thanh toán)</span>
+                                            </div>
+                                            <div class="txt-style-7">
+                                                <a href="" class="btn btn-warning"
+                                                   data-toggle="modal"
+                                                    data-target="#exampleModalCenter1"
+                                                    onmousedown="showModalChinhSuaVe(${e.makhachhang}, ${v.ma_ve})">Chỉnh sửa</a>
+                                                &nbsp;
+                                                <button  class="btn btn-secondary" readonly>Hủy vé</button>
+                                            </div>
+                                        </div>
+                                    </div>`
+                    }
+                    else {
+                        table.innerHTML += `<div class="table-row">
+                                        <div class="serial">${v.ma_ve}</div>
+                                        <div class="country" style="font-weight: 550;"
+                                             data-toggle="modal" data-target="#exampleModalCenter"
+                                             onmousedown="showModalChiTietVe(${e.makhachhang}, ${v.ma_ve})">${e.ten}</div>
+                                        <div class="country">${v.tenchuyenbay}</div>
+                                        <div class="country">${v.loaive}</div>
+                                        <div class="visit txt-style-5 row-style">
+                                            <div style="color: #ccc; font-weight: 500; font-size: 16px;">
+                                                <span>(Đang đặt)</span>
+                                            </div>
+                                            <div class="txt-style-7">
+                                                <a href="" class="btn btn-warning"
+                                                   data-toggle="modal" data-target="#exampleModalCenter1"
+                                                   onmousedown="showModalChinhSuaVe(${e.makhachhang}, ${v.ma_ve})">Chỉnh sửa</a>
+                                                &nbsp;
+                                                <a href="" class="btn btn-danger"
+                                                data-toggle="modal" onmousedown="showModalHuyVe(${v.ma_ve}, ${e.makhachhang})"
+                                                data-target="#exampleModalCenter3">Hủy vé</a>
+                                                &nbsp;
+                                                <a href="" class="btn btn-success"
+                                                   data-toggle="modal" onclick="showModalThanhToan(${v.ma_ve})"
+                                                   data-target="#exampleModalCenter5">Thanh Toán</a>
+                                            </div>
+                                        </div>
+                                    </div>`
+                    }
+                })
+
+            })
+        })
+    }
+>>>>>>> 91331291e747ac7d1c3fad6ef5a38cb75a950589
 
     function showModalChiTietVe (makhachhang, mave) {
         fetch('http://127.0.0.1:5000/api/chi-tiet-ve', {
