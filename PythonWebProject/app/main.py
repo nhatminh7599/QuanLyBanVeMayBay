@@ -79,7 +79,20 @@ def ticket_info():
 @app.route("/ticket-manager", methods=['get', 'post'])
 @decorator.login_required_user
 def ticket_manager():
-    return render_template("nhanvien/ticket-manager.html")
+    kw = ''
+    page_num = 1
+    if request.method == 'POST':
+        kw = request.form["kw"] if request.form.get("kw") else ''
+        page_num = int(request.form["page_num"]) if request.form.get("page_num") else 1
+    if request.method == 'GET':
+        kw = request.args["kw"] if request.args.get("kw") else ''
+        page_num = int(request.args["page_num"]) if request.args.get("page_num") else 1
+
+    if kw != '':
+        ve = dao.tim_khach_hang(keyword=kw, page=page_num)
+    else:
+        ve = ''
+    return render_template("nhanvien/ticket-manager.html", ve=ve, kw=kw, page_num=page_num)
 
 @app.route("/flight-manager", methods=['get', 'post'])
 @decorator.login_required_user

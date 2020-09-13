@@ -287,31 +287,40 @@ def read_loai_ve_theo_chuyen(ma_chuyen):
     return data
 
 
-def tim_khach_hang(keyword):
-    data = []
-    khach_hang = KhachHang.query
-    khach_hang = khach_hang.filter((KhachHang.cmnd == keyword) | (KhachHang.sdt == keyword)).all()
-    for khach in khach_hang:
-        ve_may_bay = VeMayBay.query.filter(VeMayBay.makhachhang == khach.makhachhang)
-        ve = []
-        for vemaybay in ve_may_bay:
-            ve.append({
-                'ma_ve': vemaybay.mave,
-                'tenchuyenbay': vemaybay.lichchuyenbay.__str__(),
-                'loaive': vemaybay.loaive.tenloaive,
-                'giave': str(vemaybay.gia),
-                'trangthai': vemaybay.trangthai
-            })
-        data.append({
-            'makhachhang': khach.makhachhang,
-            'ten': khach.ten,
-            'cmnd': khach.cmnd,
-            'sdt': khach.sdt,
-            'email': khach.email,
-            'gioitinh': khach.gioitinh,
-            'vemaybay': ve
-        })
-    return data
+# def tim_khach_hang(keyword):
+#     data = []
+#     khach_hang = KhachHang.query
+#     khach_hang = khach_hang.filter((KhachHang.cmnd == keyword) | (KhachHang.sdt == keyword)).all()
+#     for khach in khach_hang:
+#         ve_may_bay = VeMayBay.query.filter(VeMayBay.makhachhang == khach.makhachhang)
+#         ve = []
+#         for vemaybay in ve_may_bay:
+#             ve.append({
+#                 'ma_ve': vemaybay.mave,
+#                 'tenchuyenbay': vemaybay.lichchuyenbay.__str__(),
+#                 'loaive': vemaybay.loaive.tenloaive,
+#                 'giave': str(vemaybay.gia),
+#                 'trangthai': vemaybay.trangthai
+#             })
+#         data.append({
+#             'makhachhang': khach.makhachhang,
+#             'ten': khach.ten,
+#             'cmnd': khach.cmnd,
+#             'sdt': khach.sdt,
+#             'email': khach.email,
+#             'gioitinh': khach.gioitinh,
+#             'vemaybay': ve
+#         })
+#     return data
+
+
+def tim_khach_hang(keyword, page=1):
+    khach_hang = KhachHang.query.filter((KhachHang.cmnd == keyword) | (KhachHang.sdt == keyword)).all()
+    makh = []
+    for k in khach_hang:
+        makh.append(k.makhachhang)
+    ve = VeMayBay.query.filter(VeMayBay.makhachhang.in_(makh)).paginate(page=page, per_page=5)
+    return ve
 
 
 def tim_khach_hang_id(ma_khach_hang, ma_ve):
