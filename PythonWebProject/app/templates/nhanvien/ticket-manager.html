@@ -1,9 +1,7 @@
 {% extends 'base.html' %}
 
 {% block body %}
-{{data}}
-{{keyword}}
-<div class="container">
+<div class="container table-style">
     <div class="section-top-border">
         <div class="d-flex">
             <div class="mr-auto p-2"><h3 class="">Quản lý vé khách hàng</h3></div>
@@ -415,9 +413,9 @@
             table.innerHTML = `<div class="table-head">
                                 <div class="serial">Mã vé</div>
                                 <div class="country">Tên khách hàng</div>
-                                <div class="visit">Tên chuyến bay</div>
+                                <div class="country">Tên chuyến bay</div>
                                 <div class="country">Loại vé</div>
-                                <div class="visit">
+                                <div class="visit row-style">
                                     <a class="dropdown-toggle" href="" type="button" id="dropdownMenuButton"
                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Sắp xếp
@@ -441,9 +439,9 @@
                                              data-target="#exampleModalCenter"
                                              onmousedown="showModalChiTietVe(${e.makhachhang}, ${v.ma_ve})">
                                              ${e.ten}</div>
-                                        <div class="visit">${v.tenchuyenbay}</div>
+                                        <div class="country">${v.tenchuyenbay}</div>
                                         <div class="country">${v.loaive}</div>
-                                        <div class="visit txt-style-5">
+                                        <div class="visit txt-style-5 row-style">
                                             <div style="color: #ccc; font-weight: 500; font-size: 16px;">
                                                 <span>(Đã thanh toán)</span>
                                             </div>
@@ -464,9 +462,9 @@
                                         <div class="country" style="font-weight: 550;"
                                              data-toggle="modal" data-target="#exampleModalCenter"
                                              onmousedown="showModalChiTietVe(${e.makhachhang}, ${v.ma_ve})">${e.ten}</div>
-                                        <div class="visit">${v.tenchuyenbay}</div>
+                                        <div class="country">${v.tenchuyenbay}</div>
                                         <div class="country">${v.loaive}</div>
-                                        <div class="visit txt-style-5">
+                                        <div class="visit txt-style-5 row-style">
                                             <div style="color: #ccc; font-weight: 500; font-size: 16px;">
                                                 <span>(Đang đặt)</span>
                                             </div>

@@ -1,3 +1,11 @@
+.table-style {
+    max-width: 90% !important;
+}
+
+.row-style {
+    width: 32.74% !important;
+}
+
 .logo-style {
     font-family: "Kaushan Script", cursive;
     font-size: 2.5rem !important;
@@ -214,6 +222,10 @@
     .ticket-form-detail-3 {
         margin-right: -38px !important;
     }
+
+    .row-style {
+        width: 40.74% !important;
+    }
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
@@ -226,7 +238,16 @@
         margin-right: 35px !important;
         margin-top: 153px !important;
     }
+
+    .table-style {
+        max-width: 100% !important;
+    }
+
+     .row-style {
+        width: 43.74% !important;
+    }
 }
+
 
 @media only screen and (min-width: 576px) and (max-width: 767px) {
     .ticket-form-detail-2 {
@@ -245,6 +266,10 @@
         margin-left: 120px;
         margin-right: -1px;
         margin-top: 17px;
+    }
+
+    .table-style {
+        max-width: 100% !important;
     }
 }
 
@@ -266,6 +291,10 @@
         margin-right: 0px;
         margin-top: 17px;
     }
+
+    .table-style {
+        max-width: 100% !important;
+    }
 }
 
 @media (min-width: 339px ) and (max-width: 460px) {
@@ -286,6 +315,10 @@
         margin-right: 0px;
         margin-top: 17px;
     }
+
+    .table-style {
+        max-width: 100% !important;
+    }
 }
 
 @media (max-width: 338px) {
@@ -305,6 +338,10 @@
         margin-left: 120px;
         margin-right: 0px;
         margin-top: 17px;
+    }
+
+    .table-style {
+        max-width: 100% !important;
     }
 }
 
