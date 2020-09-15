@@ -158,7 +158,7 @@
 }
 
 .modal-style {
-    top: 28px !important;
+    top: 0px !important;
 }
 
 @media (min-width: 576px) {

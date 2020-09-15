@@ -44,6 +44,8 @@ def ticket_list():
     madiemden = request.form.get("madiemden")
     ngaykhoihanh = request.form.get("ngaykhoihanh")
     maloaive = request.form.get("maloaive")
+    # ngaykhoihanh = datetime.strptime(ngaykhoihanh, '%Y-%m-%d')
+    # ngaykhoihanh.replace(day=15)
     return render_template("nhanvien/ticket-list.html", diemdi=diemdi, diemden=diemden, madiemdi=madiemdi,
                            madiemden=madiemden, ngaykhoihanh=ngaykhoihanh, maloaive=maloaive)
 
@@ -98,6 +100,7 @@ def ticket_manager():
 @decorator.login_required_user
 def flight_manager():
     sanbay = dao.read_san_bay()
+    qd = dao.doc_quy_dinh_thoi_gian_bay()
     if request.method == 'POST':
         diemdi = request.form["diemDi"] if request.form.get("diemDi") else None
         diemden = request.form["diemDen"] if request.form.get("diemDen") else None
@@ -107,7 +110,7 @@ def flight_manager():
             lich = dao.read_lich_chuyen_bay()
     else:
         lich = dao.read_lich_chuyen_bay()
-    return render_template("nhanvien/flight-manager.html", sanbay=sanbay, lich=lich)
+    return render_template("nhanvien/flight-manager.html", sanbay=sanbay, lich=lich, qd=qd)
 
 @app.route("/login", methods=['get', 'post'])
 def login():

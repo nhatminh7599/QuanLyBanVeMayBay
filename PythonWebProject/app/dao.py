@@ -368,7 +368,7 @@ def them_ve(trang_thai, gia, ma_loai_ve, ma_chuyen_bay, ma_khach_hang, giam_gia=
         if gia_ve.soghetrong > 0:
             ve = VeMayBay(trangthai=int(trang_thai), gia=int(gia), giamgia=0, maloaive=int(ma_loai_ve),
                           machuyenbay=int(ma_chuyen_bay), makhachhang=int(ma_khach_hang),
-                          ngaykhoitao=datetime.datetime.utcnow().strftime('%Y-%m-%d'))
+                          ngaykhoitao=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             db.session.add(ve)
             db.session.commit()
             gia_ve.soghetrong = gia_ve.soghetrong - 1
@@ -462,3 +462,8 @@ def doanh_thu_theo_nam(date):
                 'nam': nam
             })
     return data
+
+
+def doc_quy_dinh_thoi_gian_bay():
+    qd = QuyDinh.query.get(1)
+    return qd

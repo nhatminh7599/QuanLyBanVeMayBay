@@ -377,12 +377,16 @@
         }
         else
             if (tgDung1 != '') {
+                if (Number(tgDung1) < Number({{qd.noidung}}))
+                    return false
                 if ((diaDiemKH == diemDung1) || (diaDiemDi == diemDung1)) {
                     alert("Vui lòng chọn sân bay phù hợp")
                     return false
                 }
                 else
                     if (tgDung2 != '')
+                        if (Number(tgDung2) < Number({{qd.noidung}}))
+                            return false
                         if ((diaDiemKH == diemDung2) || (diaDiemDi == diemDung2) || (diemDung1 == diemDung2)) {
                             alert("Vui lòng chọn sân bay phù hợp")
                             return false
